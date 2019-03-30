@@ -1,7 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFrameworks>
+      netcoreapp2.0;
+      net47;
+    </TargetFrameworks>
     <RootNamespace>ent</RootNamespace>
     <GenerateCodeFromAttributesToolPathOverride>..\CodeGeneration.Roslyn\bin\CodeGeneration.Roslyn.Tool\$(Configuration)\netcoreapp2.0\dotnet-codegen.dll</GenerateCodeFromAttributesToolPathOverride>
   </PropertyGroup>
