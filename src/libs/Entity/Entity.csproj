@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <RootNamespace>ent</RootNamespace>
+    <GenerateCodeFromAttributesToolPathOverride>..\CodeGeneration.Roslyn\bin\CodeGeneration.Roslyn.Tool\$(Configuration)\netcoreapp2.0\dotnet-codegen.dll</GenerateCodeFromAttributesToolPathOverride>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="2.9.0" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.6.0-preview3.19128.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CodeGeneration.Roslyn\src\CodeGeneration.Roslyn.Engine\CodeGeneration.Roslyn.Engine.csproj" />
+    <ProjectReference Include="..\CodeGeneration.Roslyn\src\CodeGeneration.Roslyn.Tasks\CodeGeneration.Roslyn.Tasks.csproj" />
+    <ProjectReference Include="..\CodeGeneration.Roslyn\src\CodeGeneration.Roslyn.Tool\CodeGeneration.Roslyn.Tool.csproj" />
+    <ProjectReference Include="..\GenCaseClass\GenCaseClass.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Entity.cs">
+      <Generator>MSBuild:GenerateCodeFromAttributes</Generator>
+    </Compile>
+  </ItemGroup>
+
+  <Import Project="..\CodeGeneration.Roslyn\src\CodeGeneration.Roslyn.Tasks\build\CodeGeneration.Roslyn.BuildTime.targets" />
+
+
+</Project>
