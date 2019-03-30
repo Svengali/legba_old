@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Optional" Version="5.0.0-alpha" />
     <PackageReference Include="Validation" Version="2.4.22" />
   </ItemGroup>
 

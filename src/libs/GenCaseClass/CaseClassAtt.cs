@@ -10,7 +10,7 @@ namespace gen
 ///[Conditional("CodeGeneration")]
 
 
-[AttributeUsage(AttributeTargets.Class)]
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
 [CodeGenerationAttribute(typeof(CaseClassGen))]
 [Conditional("CodeGeneration")]
 public class CaseClassAttribute : Attribute
