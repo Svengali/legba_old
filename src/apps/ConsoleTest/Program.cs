@@ -12,7 +12,7 @@ namespace ConsoleTest
         {
             Console.WriteLine( $"This is a test" );
 
-            var ent_2 = new ent.EntityCaseClass();
+            //var ent_2 = new ent.EntityCaseClass();
 
 
 

@@ -4,3 +4,6 @@
 [submodule "src/libs/CodeGeneration.Roslyn"]
 	path = src/libs/CodeGeneration.Roslyn
 	url = https://github.com/Svengali/CodeGeneration.Roslyn
+[submodule "src/libs/orleans"]
+	path = src/libs/orleans
+	url = https://github.com/Svengali/orleans
