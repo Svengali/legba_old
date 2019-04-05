@@ -10,6 +10,9 @@ namespace EntityTest
         {
             Console.WriteLine("Hello World!");
 
+						var e = ent.Entity.create( testStringOpt: "Howdy" );
+
+
 
         }
     }

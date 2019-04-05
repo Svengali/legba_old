@@ -16,27 +16,29 @@ using SF = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 
 
-static class SU
+public static class SU
 {
 
-	public static T Or<T>(this Optional<T> opt, T def)
+	public static T Or<T>( this Optional<T> opt, T def )
 	{
-		if( opt.HasValue ) return opt.Value;
+		if( opt.HasValue)
+			return opt.Value;
 
 		return def;
 	}
 
 
-	public static T StaticOr<T>(Optional<T> opt, T def)
+	public static T Def<T>( Optional<T> opt, T def )
 	{
-		if( opt.HasValue ) return opt.Value;
+		if(opt.HasValue)
+			return opt.Value;
 
 		return def;
 	}
 
 
 
-	/*
+	//*
 	internal static ParameterSyntax Optional( ParameterSyntax parameter )
 	{
 
@@ -44,18 +46,17 @@ static class SU
 				.WithType(OptionalOf(parameter.Type))
 				.WithDefault(SF.EqualsValueClause(SF.DefaultExpression(OptionalOf(parameter.Type))));
 	}
-	*/
+	//*/
 
-	/*
+	//*
 	internal static NameSyntax OptionalOf( TypeSyntax type )
 	{
-		return SF.QualifiedName(
-				SF.IdentifierName(nameof(cc)),
+		return 
 				SF.GenericName(
 						SF.Identifier(nameof(Optional)),
-						SF.TypeArgumentList(SF.SingletonSeparatedList(type))));
+						SF.TypeArgumentList(SF.SingletonSeparatedList(type)));
 	}
-	*/
+	//*/
 
 	internal static MemberAccessExpressionSyntax OptionalIsDefined( ExpressionSyntax optionalOfTExpression )
 	{
@@ -282,6 +283,11 @@ static class SU
 				elementType == null
 						? (SimpleNameSyntax)SF.IdentifierName(nameof(ImmutableStack.Create))
 						: SF.GenericName(nameof(ImmutableStack.Create)).AddTypeArgumentListArguments(elementType));
+	}
+
+	internal static BaseMethodDeclarationSyntax AddKeyword( BaseMethodDeclarationSyntax method, SyntaxKind keyword )
+	{
+		return method.WithModifiers(method.Modifiers.Insert(0, SF.Token(keyword)));
 	}
 
 	internal static MethodDeclarationSyntax AddNewKeyword( MethodDeclarationSyntax method )
