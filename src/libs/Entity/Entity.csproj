@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Entity.cs">
+    <Compile Update="GenEntity.cs">
       <Generator>MSBuild:GenerateCodeFromAttributes</Generator>
     </Compile>
   </ItemGroup>

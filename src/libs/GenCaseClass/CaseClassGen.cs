@@ -104,7 +104,7 @@ namespace gen
 
 				var withMembers = CreateDefault();
 
-				withMembers = withMembers.AddRange( CreatePrivateConstructors() );
+				withMembers = withMembers.AddRange( CreateProtectedConstructors() );
 
 				withMembers = withMembers.AddRange( CreateWithFunctions() );
 				
@@ -212,7 +212,8 @@ namespace gen
 
 			block = block.WithStatements( CreateAssignments( "" ) );
 
-			withFn = withFn.WithBody( block );
+			withFn = withFn.WithBody( block )
+				.WithModifiers( SyntaxTokenList.Create( SF.Token( SyntaxKind.PublicKeyword ) ) );
 
 			var list = new SyntaxList<MemberDeclarationSyntax>();
 
@@ -252,7 +253,7 @@ namespace gen
 
 
 
-		private SyntaxList<MemberDeclarationSyntax> CreatePrivateConstructors()
+		private SyntaxList<MemberDeclarationSyntax> CreateProtectedConstructors()
 		{
 			var list = new SyntaxList<MemberDeclarationSyntax>();
 
@@ -260,7 +261,7 @@ namespace gen
 			{
 				BaseMethodDeclarationSyntax cons = SF.ConstructorDeclaration( m_class.Identifier );
 
-				cons = SU.AddKeyword( cons, SyntaxKind.PrivateKeyword );
+				cons = SU.AddKeyword( cons, SyntaxKind.ProtectedKeyword );
 
 				var paramList = new SeparatedSyntaxList<ParameterSyntax>();
 
@@ -296,7 +297,7 @@ namespace gen
 			{
 				BaseMethodDeclarationSyntax cons = SF.ConstructorDeclaration( m_class.Identifier );
 
-				cons = SU.AddKeyword( cons, SyntaxKind.PrivateKeyword );
+				cons = SU.AddKeyword( cons, SyntaxKind.ProtectedKeyword );
 
 				var block = SF.Block();
 
