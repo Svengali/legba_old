@@ -20,6 +20,12 @@ namespace EntityTest
 
 			change( ref e );
 
+			var v = e.TestVal;
+
+			//var ver = e.Ver
+
+			var ver = e.Version;
+
 			Console.WriteLine( $"int is {e.testInt}" );
 		}
 

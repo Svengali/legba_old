@@ -33,6 +33,9 @@ namespace gen
 
 		private ClassDeclarationSyntax m_class;
 
+        private INamedTypeSymbol m_sym;
+
+        private INamedTypeSymbol m_baseSym;
 
 		public CaseClassGen( AttributeData attributeData )
 		{
@@ -43,36 +46,25 @@ namespace gen
 		}
 
 
-		public Task<RichGenerationResult> GenerateRichAsync( TransformationContext context, IProgress<Diagnostic> progress, CancellationToken cancellationToken )
-		{
-			var gen = new RichGenerationResult();
-
-			//gen.Members = gen.Members.Add( GenerateAsync( context, progress, cancellationToken ).Result );
-
-			gen.Usings = gen.Usings.Add( SF.UsingDirective( SF.IdentifierName( "Microsoft.CodeAnalysis" ) ) );
-
-			return Task.FromResult( gen );
-		}
-
-
 		public Task<SyntaxList<MemberDeclarationSyntax>> GenerateAsync( TransformationContext context, IProgress<Diagnostic> progress, CancellationToken cancellationToken )
 		{
 
 
 			m_context = context;
 
-			//m_context.SemanticModel.
+			m_class = m_context.ProcessingNode as ClassDeclarationSyntax;
 
-			//m_classDecl = m_context.SemanticModel.GetDeclarationDiagnostics();
-			
-			
+			m_sym = m_context.SemanticModel.GetDeclaredSymbol( m_class );
 
-			//.GetDeclarationsInSpan(TextSpan.FromBounds(0, this.semanticModel.SyntaxTree.Length), true, this.cancellationToken);
+			m_baseSym = m_sym.BaseType;
+
+			var baseIsObject = m_baseSym.SpecialType == SpecialType.System_Object;
+
+
 
 			var results = SyntaxFactory.List<MemberDeclarationSyntax>();
 
 			ClassDeclarationSyntax copy = null;
-			m_class = context.ProcessingNode as ClassDeclarationSyntax;
 
 			var applyToClassIdentifier = m_class.Identifier;
 
@@ -98,11 +90,20 @@ namespace gen
 				}
 
 
+                
+
+
+
 				var leadingTrivia = SF.Comment( $"/*\n{fieldsComment}\n*/" );
 
 				//var newUsing = SF.UsingDirective( SF.IdentifierName( "" ) );
 
 				var withMembers = CreateDefault();
+
+				if( baseIsObject )
+				{
+					withMembers = withMembers.AddRange( CreateVersion() );
+				}
 
 				withMembers = withMembers.AddRange( CreateProtectedConstructors() );
 
@@ -310,8 +311,6 @@ namespace gen
 			return list;
 		}
 
-
-
 		private SyntaxList<MemberDeclarationSyntax> CreateDefault()
 		{
 			var list = new SyntaxList<MemberDeclarationSyntax>();
@@ -324,13 +323,53 @@ namespace gen
 
 			var decl = SF.VariableDeclaration( SF.IdentifierName( m_class.Identifier ), SF.SingletonSeparatedList( declarator ) );
 
+			var keywords = SyntaxTokenList.Create( SF.Token( SyntaxKind.PublicKeyword ) )
+				.Add( SF.Token( SyntaxKind.StaticKeyword ) )
+				.Add( SF.Token( SyntaxKind.ReadOnlyKeyword ) );
+
+			if( m_baseSym.SpecialType != SpecialType.System_Object )
+			{
+				keywords = keywords.Add( SF.Token( SyntaxKind.NewKeyword ) );
+			}
+
 			var field = SF.FieldDeclaration( decl )
-				.WithModifiers( SyntaxTokenList.Create( SF.Token( SyntaxKind.PublicKeyword ) ).Add( SF.Token( SyntaxKind.StaticKeyword ) ).Add( SF.Token( SyntaxKind.ReadOnlyKeyword ) ) );
+				.WithModifiers( keywords );
 
 			list = list.Add( field );
 
 			return list;
 		}
+
+
+		private SyntaxList<MemberDeclarationSyntax> CreateVersion()
+		{
+			var list = new SyntaxList<MemberDeclarationSyntax>();
+
+			/*
+			var versionField = $"private unsigned long m_version = 0";
+
+			var versionAcc = $"public unsigned long Version => m_version";
+
+			var versionFieldParsed = SF.ParseStatement( versionField );
+
+			var versionAccParsed = SF.ParseStatement( versionAcc );
+			*/
+
+			var versionField = SU.Field( "m_version", "long", SF.ParseExpression( "0" ), SyntaxKind.PrivateKeyword );
+
+			var versionAcc = SF.PropertyDeclaration(SF.IdentifierName("long"), "Version");
+
+
+			versionAcc = versionAcc.WithExpressionBody( SF.ArrowExpressionClause( SF.ParseExpression( "m_version" ) ) )
+				.WithSemicolonToken( SF.Token( SyntaxKind.SemicolonToken ) )
+				.WithModifiers( new SyntaxTokenList( SF.Token( SyntaxKind.PublicKeyword ) ) );
+
+			list = list.Add( versionField );
+			list = list.Add( versionAcc );
+
+			return list;
+		}
+
 
 
 	}

@@ -19,6 +19,38 @@ using SF = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 public static class SU
 {
 
+	
+	public static FieldDeclarationSyntax Field( string fieldName, string type, Optional<ExpressionSyntax> assignment, params SyntaxKind[] modifiers )
+	{
+		//var st = SF.ParseStatement( $"static public readonly {m_class.Identifier} def = new {m_class.Identifier};" );
+		//var newClass = SF.ParseExpression( $"new {m_class.Identifier}()" );
+
+		var declarator = SF.VariableDeclarator( fieldName );
+
+		if( assignment.HasValue )
+		{
+			declarator = declarator.WithInitializer( SF.EqualsValueClause( assignment.Value ) );
+		}
+
+
+		var decl = SF.VariableDeclaration( SF.IdentifierName( type ), SF.SingletonSeparatedList( declarator ) );
+
+		var field = SF.FieldDeclaration( decl );
+
+		if( modifiers.Length > 0 )
+		{
+			var stl = new SyntaxTokenList( modifiers.Select( mod => SF.Token( mod ) ) );
+
+			field = field.WithModifiers( stl );
+		}
+
+		return field;
+	}
+
+
+
+
+
 	public static T Or<T>( this Optional<T> opt, T def )
 	{
 		if( opt.HasValue)

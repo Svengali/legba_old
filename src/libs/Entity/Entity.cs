@@ -7,7 +7,9 @@ namespace ent
 {
 	public partial class Entity
 	{
+		private int m_testVal = 10;
 
+		public int TestVal => m_testVal;
 
 		public Optional<Component> Com<T>()
 		{
@@ -50,7 +52,7 @@ namespace ent
 
 	}
 
-	// Interesting.  But not toally sure its necessary
+	// Interesting.  But not totally sure its necessary
 	public partial class Mut<T>
 	{
 		private T t;
