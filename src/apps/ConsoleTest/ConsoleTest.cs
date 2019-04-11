@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ConsoleTest
 {
-	class Program
+	class ConsoleTest
 	{
 		static void Main( string[] args )
 		{

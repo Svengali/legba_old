@@ -22,7 +22,7 @@ namespace gen
 
 
 
-	public class CaseClassGen : ICodeGenerator
+	public class NetViewGen : ICodeGenerator
 	{
 		private readonly AttributeData m_attributeData;
 		private readonly ImmutableDictionary<string, TypedConstant> m_data;
@@ -42,7 +42,7 @@ namespace gen
 
 
 
-		public CaseClassGen( AttributeData attributeData )
+		public NetViewGen( AttributeData attributeData )
 		{
 			Requires.NotNull(attributeData, nameof(attributeData));
 

@@ -14,40 +14,63 @@ public class Test
 
 }
 
-[gen.CaseClass]
-public partial class Component
+public partial interface IComponent
+{
+
+}
+
+public partial class Component : IComponent
 {
 	public readonly int test = 3;
 }
 
 
-[gen.CaseClass]
 public partial class ComTest : Component
 {
 
 }
 
-[gen.CaseClass]
-public partial class ComHealth : Component
+public partial interface IComHealth : IComponent
 {
-	public readonly float health;
+	float Health { get; }
 }
 
-[gen.CaseClass]
+public partial class ComHealth : Component, IComHealth
+{
+	float m_health;
+}
+
 public partial class ComPhysical : Component
 {
-	public readonly float health;
 }
 
-
-
-[gen.CaseClass]
-public partial class Entity
+public partial interface IEntity
 {
-	public readonly Test testTest;
-	public readonly int testInt = 7;
-	public readonly string testString = "Hey, Im a test";
-	public readonly ImmutableDictionary<string, Component> coms;
+	Optional<T> Com<T>() where T : class;
+}
+
+public struct EntityId
+{
+	private ulong m_id;
+
+	static public readonly EntityId None = new EntityId( 0 );
+
+	public EntityId( ulong id )
+	{
+		m_id = id;
+	}
+
+	public ulong Id()
+	{
+		return m_id;
+	}
+}
+
+public partial class Entity : IEntity
+{
+	public EntityId m_id;
+	public ImmutableDictionary<string, Component> m_coms;
+
 }
 
 

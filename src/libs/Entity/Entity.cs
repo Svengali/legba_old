@@ -2,73 +2,114 @@
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.CodeAnalysis;
+using System.Diagnostics.Tracing;
+using lib.Net;
+using Validation;
 
 namespace ent
 {
-	public partial class Entity
+
+
+public partial class ComHealth : Component, IComHealth
+{
+	public float Health => m_health;
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+public partial class Entity
+{
+	private int m_testVal = 10;
+
+	public int TestVal => m_testVal;
+
+
+
+	public Optional<T> Com<T>() where T : class
 	{
-		private int m_testVal = 10;
+		var name = typeof(T).Name;
 
-		public int TestVal => m_testVal;
+		Component com = null;
 
-		public Optional<Component> Com<T>()
+		var hasCom = m_coms.TryGetValue( name, out com );
+
+		return com as T;
+	}
+
+	Optional<T> IEntity.Com<T>()
+	{
+		Requires.ValidState( typeof(T).IsInterface, $"{typeof(T).Name} must be an interface" );
+
+		var comOpt = Com<T>();
+
+		var com = comOpt.Value;
+
+		return com;
+	}
+
+	/*
+	public Entity MutCom<T>(Func<T> fn) where T : Component
+	{
+		var name = typeof(T).Name;
+
+		Component com = null;
+
+		var hasCom = m_coms.TryGetValue( name, out com );
+
+		if( hasCom )
 		{
-			var name = typeof(T).Name;
+			var newCom = fn();
 
-			Component com = null;
+			var newComs = m_coms.SetItem( name, newCom );
 
-			var hasCom = coms.TryGetValue( name, out com );
-
-			return com;
+			return with( comsOpt: newComs );
 		}
-
-		public Entity MutCom<T>(Func<T> fn) where T : Component
+		else
 		{
-			var name = typeof(T).Name;
+			// TODO LOG
 
-			Component com = null;
-
-			var hasCom = coms.TryGetValue( name, out com );
-
-			if( hasCom )
-			{
-				var newCom = fn();
-
-				var newComs = coms.SetItem( name, newCom );
-
-				return with( comsOpt: newComs );
-			}
-			else
-			{
-				// TODO LOG
-
-				return this;
-			}
+			return this;
 		}
+	}
+	*/
 
 		
 
 
 
+}
+
+public class Amazing
+{ }
+
+
+// Interesting.  But not totally sure its necessary
+public partial class Mut<T>
+{
+	private T t;
+
+	public Mut(ref T newT)
+	{
+		t = newT;
 	}
 
-	// Interesting.  But not totally sure its necessary
-	public partial class Mut<T>
+	public void mut(Func<T> fn)
 	{
-		private T t;
-
-		public Mut(ref T newT)
-		{
-			t = newT;
-		}
-
-		public void mut(Func<T> fn)
-		{
-				t = fn();
-		}
+			t = fn();
+	}
 			
 
-	}
+}
 
 
 

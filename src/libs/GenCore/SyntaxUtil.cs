@@ -71,7 +71,7 @@ public static class SU
 
 
 	//*
-	internal static ParameterSyntax Optional( ParameterSyntax parameter )
+	public static ParameterSyntax Optional( ParameterSyntax parameter )
 	{
 
 		return parameter
@@ -81,7 +81,7 @@ public static class SU
 	//*/
 
 	//*
-	internal static NameSyntax OptionalOf( TypeSyntax type )
+	public static NameSyntax OptionalOf( TypeSyntax type )
 	{
 		return 
 				SF.GenericName(
@@ -90,25 +90,25 @@ public static class SU
 	}
 	//*/
 
-	internal static MemberAccessExpressionSyntax OptionalIsDefined( ExpressionSyntax optionalOfTExpression )
+	public static MemberAccessExpressionSyntax OptionalIsDefined( ExpressionSyntax optionalOfTExpression )
 	{
 		return SF.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, optionalOfTExpression, SF.IdentifierName(nameof(Optional<int>.HasValue)));
 	}
 
-	internal static InvocationExpressionSyntax OptionalGetValueOrDefault( ExpressionSyntax optionalOfTExpression, ExpressionSyntax defaultValue )
+	public static InvocationExpressionSyntax OptionalGetValueOrDefault( ExpressionSyntax optionalOfTExpression, ExpressionSyntax defaultValue )
 	{
 		return SF.InvocationExpression(
 				SF.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, optionalOfTExpression, SF.IdentifierName(nameof(Or))),
 				SF.ArgumentList(SF.SingletonSeparatedList(SF.Argument(defaultValue))));
 	}
 
-	internal static MemberAccessExpressionSyntax OptionalValue( ExpressionSyntax optionalOfTExpression )
+	public static MemberAccessExpressionSyntax OptionalValue( ExpressionSyntax optionalOfTExpression )
 	{
 		return SF.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, optionalOfTExpression, SF.IdentifierName(nameof(Optional<int>.Value)));
 	}
 
 	/*
-	internal static ExpressionSyntax OptionalFor( ExpressionSyntax expression )
+	public static ExpressionSyntax OptionalFor( ExpressionSyntax expression )
 	{
 		return SF.InvocationExpression(
 				SF.MemberAccessExpression(
@@ -122,21 +122,21 @@ public static class SU
 	*/
 
 	/*
-	internal static ExpressionSyntax OptionalForIf( ExpressionSyntax expression, bool isOptional )
+	public static ExpressionSyntax OptionalForIf( ExpressionSyntax expression, bool isOptional )
 	{
 		return isOptional ? OptionalFor(expression) : expression;
 	}
 	*/
 
 	/*
-	internal static ImmutableArray<DeclarationInfo> GetDeclarationsInSpan( this SemanticModel model, TextSpan span, bool getSymbol, CancellationToken cancellationToken )
+	public static ImmutableArray<DeclarationInfo> GetDeclarationsInSpan( this SemanticModel model, TextSpan span, bool getSymbol, CancellationToken cancellationToken )
 	{
 		return CSharpDeclarationComputer.GetDeclarationsInSpan(model, span, getSymbol, cancellationToken);
 	}
 	//*/
 
 	//*
-	internal static NameSyntax GetTypeSyntax( Type type )
+	public static NameSyntax GetTypeSyntax( Type type )
 	{
 		Requires.NotNull(type, nameof(type));
 
@@ -166,7 +166,7 @@ public static class SU
 	}
 	//*/
 
-	internal static NameSyntax IEnumerableOf( TypeSyntax typeSyntax )
+	public static NameSyntax IEnumerableOf( TypeSyntax typeSyntax )
 	{
 		return SF.QualifiedName(
 				SF.QualifiedName(
@@ -179,7 +179,7 @@ public static class SU
 						SF.TypeArgumentList(SF.SingletonSeparatedList(typeSyntax))));
 	}
 
-	internal static NameSyntax IEnumeratorOf( TypeSyntax typeSyntax )
+	public static NameSyntax IEnumeratorOf( TypeSyntax typeSyntax )
 	{
 		return SF.QualifiedName(
 				SF.QualifiedName(
@@ -192,7 +192,7 @@ public static class SU
 						SF.TypeArgumentList(SF.SingletonSeparatedList(typeSyntax))));
 	}
 
-	internal static NameSyntax IEquatableOf( TypeSyntax typeSyntax )
+	public static NameSyntax IEquatableOf( TypeSyntax typeSyntax )
 	{
 		return SF.QualifiedName(
 				SF.IdentifierName(nameof(System)),
@@ -201,7 +201,7 @@ public static class SU
 						SF.TypeArgumentList(SF.SingletonSeparatedList(typeSyntax))));
 	}
 
-	internal static NameSyntax IEqualityComparerOf( TypeSyntax typeSyntax )
+	public static NameSyntax IEqualityComparerOf( TypeSyntax typeSyntax )
 	{
 		return SF.QualifiedName(
 				SF.QualifiedName(
@@ -214,7 +214,7 @@ public static class SU
 						SF.TypeArgumentList(SF.SingletonSeparatedList(typeSyntax))));
 	}
 
-	internal static NameSyntax ImmutableStackOf( TypeSyntax typeSyntax )
+	public static NameSyntax ImmutableStackOf( TypeSyntax typeSyntax )
 	{
 		return SF.QualifiedName(
 				SF.QualifiedName(
@@ -227,14 +227,14 @@ public static class SU
 						SF.TypeArgumentList(SF.SingletonSeparatedList(typeSyntax))));
 	}
 
-	internal static NameSyntax FuncOf( params TypeSyntax[] typeArguments )
+	public static NameSyntax FuncOf( params TypeSyntax[] typeArguments )
 	{
 		return SF.QualifiedName(
 				SF.IdentifierName(nameof(System)),
 				SF.GenericName(nameof(Func<int>)).AddTypeArgumentListArguments(typeArguments));
 	}
 
-	internal static InvocationExpressionSyntax ToList( ExpressionSyntax expression )
+	public static InvocationExpressionSyntax ToList( ExpressionSyntax expression )
 	{
 		return SF.InvocationExpression(
 				// System.Linq.Enumerable.ToList
@@ -249,7 +249,7 @@ public static class SU
 				SF.ArgumentList(SF.SingletonSeparatedList(SF.Argument(expression))));
 	}
 
-	internal static NameSyntax IReadOnlyCollectionOf( TypeSyntax elementType )
+	public static NameSyntax IReadOnlyCollectionOf( TypeSyntax elementType )
 	{
 		return SF.QualifiedName(
 				SF.QualifiedName(
@@ -262,7 +262,7 @@ public static class SU
 						SF.TypeArgumentList(SF.SingletonSeparatedList(elementType))));
 	}
 
-	internal static NameSyntax IReadOnlyListOf( TypeSyntax elementType )
+	public static NameSyntax IReadOnlyListOf( TypeSyntax elementType )
 	{
 		return SF.QualifiedName(
 				SF.QualifiedName(
@@ -275,7 +275,7 @@ public static class SU
 						SF.TypeArgumentList(SF.SingletonSeparatedList(elementType))));
 	}
 
-	internal static NameSyntax KeyValuePairOf( TypeSyntax keyType, TypeSyntax valueType )
+	public static NameSyntax KeyValuePairOf( TypeSyntax keyType, TypeSyntax valueType )
 	{
 		return SF.QualifiedName(
 				SF.QualifiedName(
@@ -288,7 +288,7 @@ public static class SU
 						SF.TypeArgumentList(JoinSyntaxNodes(SyntaxKind.CommaToken, keyType, valueType))));
 	}
 
-	internal static ExpressionSyntax CreateDictionary( TypeSyntax keyType, TypeSyntax valueType )
+	public static ExpressionSyntax CreateDictionary( TypeSyntax keyType, TypeSyntax valueType )
 	{
 		// System.Collections.Immutable.ImmutableDictionary.Create<TKey, TValue>()
 		return SF.InvocationExpression(
@@ -299,7 +299,7 @@ public static class SU
 				SF.ArgumentList());
 	}
 
-	internal static ExpressionSyntax CreateImmutableStack( TypeSyntax elementType = null )
+	public static ExpressionSyntax CreateImmutableStack( TypeSyntax elementType = null )
 	{
 		var typeSyntax = SF.QualifiedName(
 				SF.QualifiedName(
@@ -317,40 +317,40 @@ public static class SU
 						: SF.GenericName(nameof(ImmutableStack.Create)).AddTypeArgumentListArguments(elementType));
 	}
 
-	internal static BaseMethodDeclarationSyntax AddKeyword( BaseMethodDeclarationSyntax method, SyntaxKind keyword )
+	public static BaseMethodDeclarationSyntax AddKeyword( BaseMethodDeclarationSyntax method, SyntaxKind keyword )
 	{
 		return method.WithModifiers(method.Modifiers.Insert(0, SF.Token(keyword)));
 	}
 
-	internal static MethodDeclarationSyntax AddNewKeyword( MethodDeclarationSyntax method )
+	public static MethodDeclarationSyntax AddNewKeyword( MethodDeclarationSyntax method )
 	{
 		return method.WithModifiers(method.Modifiers.Insert(0, SF.Token(SyntaxKind.NewKeyword)));
 	}
 
-	internal static PropertyDeclarationSyntax AddNewKeyword( PropertyDeclarationSyntax method )
+	public static PropertyDeclarationSyntax AddNewKeyword( PropertyDeclarationSyntax method )
 	{
 		return method.WithModifiers(method.Modifiers.Insert(0, SF.Token(SyntaxKind.NewKeyword)));
 	}
 
-	internal static SeparatedSyntaxList<T> JoinSyntaxNodes<T>( SyntaxKind tokenDelimiter, params T[] nodes )
+	public static SeparatedSyntaxList<T> JoinSyntaxNodes<T>( SyntaxKind tokenDelimiter, params T[] nodes )
 			where T : SyntaxNode
 	{
 		return SF.SeparatedList<T>(JoinSyntaxNodes<T>(SF.Token(tokenDelimiter), nodes));
 	}
 
-	internal static SeparatedSyntaxList<T> JoinSyntaxNodes<T>( SyntaxKind tokenDelimiter, ImmutableArray<T> nodes )
+	public static SeparatedSyntaxList<T> JoinSyntaxNodes<T>( SyntaxKind tokenDelimiter, ImmutableArray<T> nodes )
 			where T : SyntaxNode
 	{
 		return SF.SeparatedList<T>(JoinSyntaxNodes<T>(SF.Token(tokenDelimiter), nodes));
 	}
 
-	internal static SeparatedSyntaxList<T> JoinSyntaxNodes<T>( SyntaxKind tokenDelimiter, IEnumerable<T> nodes )
+	public static SeparatedSyntaxList<T> JoinSyntaxNodes<T>( SyntaxKind tokenDelimiter, IEnumerable<T> nodes )
 			where T : SyntaxNode
 	{
 		return SF.SeparatedList<T>(JoinSyntaxNodes<T>(SF.Token(tokenDelimiter), nodes.ToArray()));
 	}
 
-	internal static SyntaxNodeOrTokenList JoinSyntaxNodes<T>( SyntaxToken separatingToken, IReadOnlyList<T> nodes )
+	public static SyntaxNodeOrTokenList JoinSyntaxNodes<T>( SyntaxToken separatingToken, IReadOnlyList<T> nodes )
 			where T : SyntaxNode
 	{
 		Requires.NotNull(nodes, nameof(nodes));
@@ -375,19 +375,19 @@ public static class SU
 		}
 	}
 
-	internal static ParameterListSyntax PrependParameter( this ParameterListSyntax list, ParameterSyntax parameter )
+	public static ParameterListSyntax PrependParameter( this ParameterListSyntax list, ParameterSyntax parameter )
 	{
 		return SF.ParameterList(SF.SingletonSeparatedList(parameter))
 				.AddParameters(list.Parameters.ToArray());
 	}
 
-	internal static ArgumentListSyntax PrependArgument( this ArgumentListSyntax list, ArgumentSyntax argument )
+	public static ArgumentListSyntax PrependArgument( this ArgumentListSyntax list, ArgumentSyntax argument )
 	{
 		return SF.ArgumentList(SF.SingletonSeparatedList(argument))
 				.AddArguments(list.Arguments.ToArray());
 	}
 
-	internal static ExpressionSyntax ThisDot( SimpleNameSyntax memberAccess )
+	public static ExpressionSyntax ThisDot( SimpleNameSyntax memberAccess )
 	{
 		return SF.MemberAccessExpression(
 				SyntaxKind.SimpleMemberAccessExpression,
@@ -395,7 +395,7 @@ public static class SU
 				memberAccess);
 	}
 
-	internal static ExpressionSyntax BaseDot( SimpleNameSyntax memberAccess )
+	public static ExpressionSyntax BaseDot( SimpleNameSyntax memberAccess )
 	{
 		return SF.MemberAccessExpression(
 				SyntaxKind.SimpleMemberAccessExpression,
@@ -403,12 +403,12 @@ public static class SU
 				memberAccess);
 	}
 
-	internal static ExpressionSyntax ChainBinaryExpressions( this IEnumerable<ExpressionSyntax> expressions, SyntaxKind binaryOperator )
+	public static ExpressionSyntax ChainBinaryExpressions( this IEnumerable<ExpressionSyntax> expressions, SyntaxKind binaryOperator )
 	{
 		return expressions.Aggregate((ExpressionSyntax)null, ( agg, e ) => agg != null ? SF.BinaryExpression(binaryOperator, agg, e) : e);
 	}
 
-	internal static InvocationExpressionSyntax EnumerableExtension( SimpleNameSyntax linqMethod, ExpressionSyntax receiver, ArgumentListSyntax arguments )
+	public static InvocationExpressionSyntax EnumerableExtension( SimpleNameSyntax linqMethod, ExpressionSyntax receiver, ArgumentListSyntax arguments )
 	{
 		return SF.InvocationExpression(
 				SF.MemberAccessExpression(
@@ -418,7 +418,7 @@ public static class SU
 				arguments.PrependArgument(SF.Argument(receiver)));
 	}
 
-	internal static StatementSyntax RequiresNotNull( IdentifierNameSyntax parameter )
+	public static StatementSyntax RequiresNotNull( IdentifierNameSyntax parameter )
 	{
 		// if (other == null) { throw new System.ArgumentNullException(nameof(other)); }
 		return SF.IfStatement(
@@ -428,7 +428,7 @@ public static class SU
 								SF.Argument(SF.LiteralExpression(SyntaxKind.StringLiteralExpression, SF.Literal(parameter.Identifier.ToString()))))));
 	}
 
-	internal static TypeSyntax GetFullName( SyntaxNode typeNode )
+	public static TypeSyntax GetFullName( SyntaxNode typeNode )
 	{
 		var typeDeclaration = typeNode as TypeDeclarationSyntax;
 		if(typeDeclaration != null)
