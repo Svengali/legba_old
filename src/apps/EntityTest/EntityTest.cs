@@ -8,12 +8,13 @@ namespace EntityTest
 	{
 		static void Main( string[] args )
 		{
-			Console.WriteLine("Hello World!");
+			Console.WriteLine( "Hello World!" );
+
+			var e = ent.Entity.create();
 
 			//var nc = new NetCore.Class1();
 
 			//var e = ent.Entity.create(testStringOpt: "Howdy");
-			var e = new ent.Entity();
 
 			var mutE = new ent.Mut<ent.Entity>(ref e);
 
@@ -25,14 +26,16 @@ namespace EntityTest
 
 			var v = e.TestVal;
 
-			var healthOpt = e.Com<ent.IComHealth>();
+			//var healthOpt = e.Com<ent.IComHealth>();
 
+			/*
 			if( healthOpt.HasValue )
 			{
 				if( healthOpt.Value.Health < 10 )
 				{
 				}
 			}
+			*/
 
 			//var ver = e.Ver
 

@@ -10,7 +10,9 @@ namespace ent
 {
 
 
-public partial class ComHealth : Component, IComHealth
+
+
+public partial class ComHealth : Component
 {
 	public float Health => m_health;
 
@@ -57,6 +59,10 @@ public partial class Entity
 		return com;
 	}
 
+
+
+
+
 	/*
 	public Entity MutCom<T>(Func<T> fn) where T : Component
 	{
@@ -82,11 +88,6 @@ public partial class Entity
 		}
 	}
 	*/
-
-		
-
-
-
 }
 
 public class Amazing

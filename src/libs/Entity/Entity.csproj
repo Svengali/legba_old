@@ -21,6 +21,7 @@
     <ProjectReference Include="..\CodeGeneration.Roslyn\src\CodeGeneration.Roslyn.Tasks\CodeGeneration.Roslyn.Tasks.csproj" />
     <ProjectReference Include="..\CodeGeneration.Roslyn\src\CodeGeneration.Roslyn.Tool\CodeGeneration.Roslyn.Tool.csproj" />
     <ProjectReference Include="..\GenCaseClass\GenCaseClass.csproj" />
+    <ProjectReference Include="..\GenNet\GenNet.csproj" />
     <ProjectReference Include="..\NetCore\NetCore.csproj" />
     <ProjectReference Include="..\SharpLib\SharpLib.csproj" />
   </ItemGroup>

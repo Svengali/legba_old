@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.IO;
 using System.Text;
 using Microsoft.CodeAnalysis;
+
+using static net.Views;
 
 namespace ent
 {
 
 
 
-public class Test
-{
 
-}
+
 
 public partial interface IComponent
 {
@@ -30,19 +31,59 @@ public partial class ComTest : Component
 
 }
 
-public partial interface IComHealth : IComponent
+
+
+public partial interface IComHealth
 {
 	float Health { get; }
 }
 
+public partial interface IComHealth_Rule : IComHealth
+{
+}
+
+
+public partial interface IComHealth_Edge : IComHealth
+{
+
+}
+
+public partial interface IComHealth_Client : IComHealth
+{
+
+}
+
+
+[gen.NetView( Rule )]
+[gen.NetDist( Rule, Edge ), gen.NetDist( Edge, Client )]
 public partial class ComHealth : Component, IComHealth
 {
 	float m_health;
 }
 
-public partial class ComPhysical : Component
+public partial class ComHealth_Rule : ComHealth, IComHealth_Rule
 {
 }
+
+
+
+
+
+[gen.NetView( Rule )]
+public partial class ComPhysical : Component
+{
+	math.Vec3 m_pos;
+}
+
+
+[gen.NetView( Rule )]
+public partial class ComAdmin : Component
+{
+}
+
+
+
+
 
 public partial interface IEntity
 {
@@ -66,10 +107,14 @@ public struct EntityId
 	}
 }
 
+[gen.NetView( All )]
 public partial class Entity : IEntity
 {
-	public EntityId m_id;
-	public ImmutableDictionary<string, Component> m_coms;
+	EntityId m_id;
+	ImmutableDictionary<string, Component> m_coms;
+
+
+
 
 }
 

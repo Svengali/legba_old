@@ -53,8 +53,6 @@ namespace gen
 
 		public Task<SyntaxList<MemberDeclarationSyntax>> GenerateAsync( TransformationContext context, IProgress<Diagnostic> progress, CancellationToken cancellationToken )
 		{
-
-
 			m_context = context;
 
 			m_class = m_context.ProcessingNode as ClassDeclarationSyntax;
@@ -95,51 +93,7 @@ namespace gen
 
 				var leadingTrivia = $"{fieldsComment}\r\n";
 
-				var useDirectName = m_context.Compilation.GetTypeByMetadataName( "net.View" );
-
-				leadingTrivia += $"* DirectName | {useDirectName?.Name}\r\n";
-
-
 				leadingTrivia += $"\r\nViewers\r\n";
-                
-				var views = m_context.Compilation.GetSymbolsWithName( (name) => {
-					leadingTrivia += $"Try {name}\r\n";
-					return false;
-				}, SymbolFilter.Type );
-
-				foreach( var view in views )
-				{
-					leadingTrivia += $"View | {view.Name}\r\n";
-				}
-
-				/*
-				// The DLLs this references.
-				foreach( var r in m_context.Compilation.References )
-				{
-					leadingTrivia += $"Ref | {r.Display}\r\n";
-				}
-
-				foreach( var r in m_context.Compilation.ExternalReferences )
-				{
-					leadingTrivia += $"Ext Ref | {r.Display}\r\n";
-				}
-				*/
-
-				foreach( var a in m_context.Compilation.Assembly.TypeNames )
-				{
-					leadingTrivia += $"Assembly Types | {a}\r\n";
-				}
-
-				leadingTrivia += $"** Global Namespace {m_context.Compilation.GlobalNamespace.Name}\r\n";
-
-				/*
-				foreach( var a in m_context.Compilation.GlobalNamespace.GetMembers() )
-				{
-					AddMembers( ref leadingTrivia, a, 0 );
-				}
-				*/
-
-
 
 				foreach( var mem in m_context.Compilation.GlobalNamespace.GetMembers() )
 				{
@@ -148,24 +102,21 @@ namespace gen
 
 				leadingTrivia += $"Total Classes {m_dictClasses.Count}\r\n";
 
-				/*
-				INamedTypeSymbol viewClass = null;
-				
-				if( m_dictClasses.TryGetValue( "View", out viewClass ) )
-				{
-					leadingTrivia += $"View class found {viewClass.ToDisplayString()}\r\n";
-				}
-				else
-				{
-					leadingTrivia += $"View class NOT FOUND\r\n";
-				}
-				*/
 
 				foreach( var kvp in m_dictClasses )
 				{
-					if( kvp.Key.Contains("Amazing") )
+					if( kvp.Key.Contains("View") )
 					{
-						leadingTrivia += $"View class found {kvp.Value.ToDisplayString()}\r\n";
+						var type = kvp.Value;
+
+						if( type.ContainingNamespace.Name == "net" )
+						{
+							if( type.BaseType.Name == "View" )
+							{
+								leadingTrivia += $"View class found {kvp.Value.ToDisplayString()}\r\n";
+							}
+
+						}
 					}
 				}
 
@@ -361,13 +312,8 @@ namespace gen
 
 				//| Types: {sym.GetTypeMembers().Length} | Members: {sym.GetMembers().Length}\r\n
 
-
 			}
-
-
 		}
-
-
 
 		SyntaxToken ModifyToken( string mod, SyntaxToken token )
 		{
@@ -378,6 +324,10 @@ namespace gen
 		{
 			return SF.IdentifierName( String.Format( mod, token ) );
 		}
+
+
+
+
 
 		SyntaxList<StatementSyntax> CreateAssignments( string varPrefix )
 		{

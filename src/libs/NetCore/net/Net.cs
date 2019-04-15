@@ -8,10 +8,30 @@ namespace net
 {
 
 
+
+
+
 public interface IApi
 {
 
 }
+
+public enum Views
+{
+	None		= 0,
+	Client	= 1,
+	Edge		= 2,
+	Shadow	= 4,
+	Rule		= 8,
+
+	All			= 15,
+}
+
+
+
+
+
+
 
 public class View
 {
