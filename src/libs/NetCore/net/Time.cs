@@ -12,12 +12,12 @@ public class Time
 {
 	static public Time Cur => s_cur;
 
-	static public void AppStartup()
+	static public void startup()
 	{
 		s_cur = new Time();
 	}
 
-	static public void AppShutdown()
+	static public void shutdown()
 	{		
 	}
 
@@ -29,6 +29,7 @@ public class Time
 
 	public double Now => m_seconds;
 
+	public long NowMS => (long)(m_seconds * 1000.0);
 
 
 

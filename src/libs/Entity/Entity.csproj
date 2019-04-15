@@ -7,6 +7,7 @@
     </TargetFrameworks>
     <RootNamespace>ent</RootNamespace>
     <GenerateCodeFromAttributesToolPathOverride>..\CodeGeneration.Roslyn\bin\CodeGeneration.Roslyn.Tool\$(Configuration)\netcoreapp2.0\dotnet-codegen.dll</GenerateCodeFromAttributesToolPathOverride>
+    <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>

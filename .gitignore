@@ -1,5 +1,6 @@
 ## Project Specific settings
-run/
+run/server/logs/
+run/server/save/
 
 
 

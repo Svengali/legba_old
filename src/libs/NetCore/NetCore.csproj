@@ -11,6 +11,7 @@
     <FileVersion>0.0.1.0</FileVersion>
     <Copyright>2019+ Marc Hernandez</Copyright>
     <Description>A core set of libraries and interfaces for a distributed library.</Description>
+    <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>

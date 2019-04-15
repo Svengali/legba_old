@@ -1,0 +1,27 @@
+<root t="sv.SerializationTest" ref="1">
+  <m_strings t="System.String[]" ref="2">
+    <i0 v="Str 0" />
+    <i1 v="Str 1" />
+  </m_strings>
+  <m_comList t="System.Collections.Generic.Dictionary`2[[lib.Token, SharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]" ref="3">
+    <Version t="System.Int32" v="2" />
+    <Comparer t="System.Collections.Generic.ObjectEqualityComparer`1[[lib.Token, SharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]" ref="4" />
+    <HashSize t="System.Int32" v="3" />
+    <KeyValuePairs t="System.Collections.Generic.KeyValuePair`2[[lib.Token, SharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]][]" ref="5">
+      <i0 t="System.Collections.Generic.KeyValuePair`2[[lib.Token, SharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]" ref="6">
+        <key t="lib.Token" ref="7">
+          <m_hash v="1601847199" />
+          <m_str v="Token" />
+        </key>
+        <value v="Token" />
+      </i0>
+      <i1 t="System.Collections.Generic.KeyValuePair`2[[lib.Token, SharpLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null],[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]" ref="8">
+        <key t="lib.Token" ref="9">
+          <m_hash v="1442309558" />
+          <m_str v="Token_2" />
+        </key>
+        <value v="Token_2" />
+      </i1>
+    </KeyValuePairs>
+  </m_comList>
+</root>
