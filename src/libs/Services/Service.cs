@@ -59,6 +59,7 @@ public struct Ref<T> where T : Service
 	private Type m_type;
 }
 
+#region MixinsAndStates
 
 [AttributeUsage(validOn: AttributeTargets.Class,  AllowMultiple = true)]
 public class MixinAttribute : Attribute
@@ -155,14 +156,11 @@ public class StRunning : StBase
 
 }
 
-
-
-
-
+#endregion
 
 
 [Serializable]
-public class Answer
+public struct Answer
 {
 	public readonly Ref<Service> svc;
 	public readonly object obj;
@@ -177,9 +175,26 @@ public class Answer
 struct MsgContext
 {
 	public svmsg.Server msg;
+	//This allows our asker to wait until the other service has returned an answer
 	public EventWaitHandle wait;
 	public Answer response;
 	public List<Task<Answer>> task;
+
+	public MsgContext( svmsg.Server _msg )
+	{
+		msg = _msg;
+		wait = new EventWaitHandle(false, EventResetMode.AutoReset);
+		response = default;
+		task = new List<Task<Answer>>();
+	}
+
+	public MsgContext( svmsg.Server _msg, bool isAsk )
+	{
+		msg = _msg;
+		wait = isAsk ? new EventWaitHandle(false, EventResetMode.AutoReset) : null;
+		response = default;
+		task = new List<Task<Answer>>();
+	}
 }
 
 
@@ -221,18 +236,16 @@ public class Service
 
 	public void deliver( svmsg.Server msg )
 	{
-		MsgContext c = new MsgContext();
-		c.msg = msg;
+		MsgContext c = new MsgContext( msg );
 		m_q.Enqueue(c);
-		//m_event.Set();
+		m_event.Set();
 	}
 
 	public Task<Answer> deliverAsk( svmsg.Server msg )
 	{
-		MsgContext c = new MsgContext();
-		c.msg = msg;
-		c.wait = getEWH();
+		MsgContext c = new MsgContext( msg, isAsk: true );
 		m_q.Enqueue(c);
+
 
 		var a = new Func<svc.Answer>(() =>
 		{
@@ -260,10 +273,9 @@ public class Service
 	*/
 
 	// Single threaded.  Non-reentrent
-	Type[] mm_args = new Type[ 1 ];
-	Object[] mm_params = new Object[ 1 ];
 	void procMsg( int maxCount )
 	{
+		var args = new Type[ 1 ];
 		var thisType = GetType();
 
 		if(m_qMax < m_q.Count)
@@ -283,16 +295,16 @@ public class Service
 			{
 				if(c.wait == null)
 				{
-					mm_args[ 0 ] = c.msg.GetType();
+					args[ 0 ] = c.msg.GetType();
 					Action<svmsg.Server> fn = null;
 
-					if(!m_handlingMethod.TryGetValue(mm_args[ 0 ], out fn))
+					if(!m_handlingMethod.TryGetValue(args[ 0 ], out fn))
 					{
-						var mi = thisType.GetMethod("handle", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, mm_args, null);
+						var mi = thisType.GetMethod("handle", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, args, null);
 
 						ParameterExpression pe = Expression.Parameter(typeof(svmsg.Server), "msgIn");
 
-						var exConvert = Expression.Convert(pe, mm_args[ 0 ]);
+						var exConvert = Expression.Convert(pe, args[ 0 ]);
 
 						var exParams = new Expression[ 1 ];
 						exParams[ 0 ] = exConvert;
@@ -302,7 +314,7 @@ public class Service
 
 						fn = Expression.Lambda<Action<svmsg.Server>>(exCall, pe).Compile();
 
-						m_handlingMethod[ mm_args[ 0 ] ] = fn;
+						m_handlingMethod[ args[ 0 ] ] = fn;
 					}
 
 					if(fn != null)
@@ -327,36 +339,49 @@ public class Service
 				}
 				else
 				{
-					//var time = new lib.Timer();
-					//time.Start();
+					args[ 0 ] = c.msg.GetType();
 
-					mm_args[ 0 ] = c.msg.GetType();
+					Func<svmsg.Server, object> fn;
 
-					MethodInfo mi = null;
-
-					//if( !m_handlingMethod.TryGetValue( mm_args[0], out mi ) )
+					if( !m_handlingAsk.TryGetValue( args[0], out fn ) )
 					{
-						mi = thisType.GetMethod("handleAsk", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, mm_args, null);
-						//m_handlingMethod[ mm_args[0] ] = mi;
+						var mi = thisType.GetMethod("handleAsk", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, args, null);
+
+						ParameterExpression pe = Expression.Parameter(typeof(svmsg.Server), "msgIn");
+
+						var exConvert = Expression.Convert(pe, args[ 0 ]);
+
+						var exParams = new Expression[ 1 ];
+						exParams[ 0 ] = exConvert;
+
+						var exThis = Expression.Constant(this);
+						var exCall = Expression.Call(exThis, mi, exParams);
+
+						fn = Expression.Lambda<Func<svmsg.Server, object>>(exCall, pe).Compile();
+
+						m_handlingAsk[ args[ 0 ] ] = fn;
 					}
 
-					if(mi != null)
+					if(fn != null)
 					{
 						try
 						{
-							mm_params[ 0 ] = c.msg;
-							object resp = mi.Invoke(this, mm_params);
+							object resp = fn( c.msg );
 
 							c.response = new Answer(new Ref<Service>(this), resp);
 
 							c.wait.Set();
 
-							retEWH(c.wait);
+							//retEWH(c.wait);
 						}
 						catch(Exception e)
 						{
 							lib.Log.warn("Exception while calling {0}.  {1}", c.msg.GetType(), e);
 						}
+					}
+					else
+					{
+						unhandled( c.msg );
 					}
 
 					//time.Stop();
@@ -378,26 +403,15 @@ public class Service
 
 	public void procMsg_block( int wait )
 	{
-		//m_event.WaitOne(wait);
-		procMsg(100000000);
+		procMsg( 1000 );
+		m_event.WaitOne(wait);
 	}
 
 	public void procMsg_block()
 	{
-		//m_event.WaitOne();
-		procMsg(100000000);
+		procMsg_block( 1000 );
 	}
 
-	private EventWaitHandle getEWH()
-	{
-		return new EventWaitHandle(false, EventResetMode.AutoReset);
-	}
-
-	private void retEWH( EventWaitHandle ewh )
-	{
-		//Do nothing, for now.
-
-	}
 
 	public virtual void handle( svmsg.ServiceReady ready )
 	{
@@ -424,9 +438,12 @@ public class Service
 
 
 	ConcurrentQueue<MsgContext> m_q = new ConcurrentQueue<MsgContext>();
-	//EventWaitHandle m_event = new EventWaitHandle( false, EventResetMode.ManualReset );
 
-	Dictionary<Type, Action<svmsg.Server>> m_handlingMethod = new Dictionary<Type, Action<svmsg.Server>>();
+	//This event allows us to have a very light service that mostly sleeps until it gets a message
+	EventWaitHandle m_event = new EventWaitHandle( false, EventResetMode.ManualReset );
+
+	Dictionary<Type, Action<svmsg.Server>> m_handlingMethod	= new Dictionary<Type, Action<svmsg.Server>>();
+	Dictionary<Type, Func<svmsg.Server, object>> m_handlingAsk		= new Dictionary<Type, Func<svmsg.Server, object>>();
 
 	uint m_qMax = 100;
 }
@@ -789,7 +806,7 @@ public class Mgr
 	private ConcurrentQueue<svc.Service> m_pendingService = new ConcurrentQueue<svc.Service>();
 	private EventWaitHandle m_wait = new EventWaitHandle( true, EventResetMode.AutoReset );
 
-	private uint m_qMax = 100;
+	private uint m_qMax = 10000;
 
 	//private ConcurrentDictionary<
 }
