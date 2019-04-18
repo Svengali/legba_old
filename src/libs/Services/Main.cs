@@ -16,6 +16,12 @@ using System.IO;
 namespace sv
 {
 
+
+
+
+
+
+
 public enum ENodeType
 {
 	Root,
@@ -98,14 +104,14 @@ public class Main
 
 
 
-		CheckAndAddDirectory( "logs" );
+		checkAndAddDirectory( "logs" );
 		// save/static and save/dynamic are created when they dont exist in order to create the universe
-		CheckAndAddDirectory( "save/players" );
+		checkAndAddDirectory( "save/players" );
 
 
-		CheckAndAddDirectory( "save/archive/static" );
-		CheckAndAddDirectory( "save/archive/dynamic" );
-		CheckAndAddDirectory( "save/archive/players" );
+		checkAndAddDirectory( "save/archive/static" );
+		checkAndAddDirectory( "save/archive/dynamic" );
+		checkAndAddDirectory( "save/archive/players" );
 
 		clock = new lib.Clock( 0 );
 
@@ -202,11 +208,14 @@ public class Main
 
 		svc.Service.mgr.procMsg_block( 1000 );
 
+		checkAndAddDirectory( "" );
+
 		if( m_listener.Pending() )
 		{
 			lib.Log.info( "Client connected" );
 
 			Socket socket = m_listener.AcceptSocket();
+
 
 			net.Conn conn = new net.Conn( socket, m_formatter );
 
@@ -216,7 +225,7 @@ public class Main
 		}
 	}
 
-	private void CheckAndAddDirectory( string path )
+	private void checkAndAddDirectory( string path )
 	{
 		if( !Directory.Exists( path ) )
 		{

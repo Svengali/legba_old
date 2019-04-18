@@ -10,6 +10,12 @@ namespace EntityTest
 		{
 			Console.WriteLine( "Hello World!" );
 
+
+			var tk = new lib.Token( "Hello" );
+
+
+
+
 			var e = ent.Entity.create();
 
 			//var nc = new NetCore.Class1();
@@ -20,7 +26,7 @@ namespace EntityTest
 
 			//mutE.mut( () => { return e.with(testStringOpt: "mut"); });
 
-			//mutE.mut( () => e.with(testStringOpt: "mut 2") );
+			mutE.mut( () => e.with(m_idOpt: ent.EntityId.None) );
 
 			change( ref e );
 
