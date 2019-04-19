@@ -9,7 +9,6 @@ using System.Reflection;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Linq.Expressions;
-using svmsg;
 using System.Collections.Immutable;
 
 namespace svc
@@ -172,105 +171,36 @@ public struct Answer
 	}
 }
 
-struct MsgContext
+public struct MsgContext
 {
-	public svmsg.Server msg;
+	public svmsg.Server m;
 	//This allows our asker to wait until the other service has returned an answer
 	public EventWaitHandle wait;
 	public Answer response;
 	public List<Task<Answer>> task;
 
-	public MsgContext( svmsg.Server _msg )
+	static public MsgContext msg( svmsg.Server _msg )
 	{
-		msg = _msg;
-		wait = new EventWaitHandle(false, EventResetMode.AutoReset);
-		response = default;
-		task = new List<Task<Answer>>();
+		return new MsgContext( _msg, false );
+	}
+
+	static public MsgContext ask( svmsg.Server _msg )
+	{
+		return new MsgContext( _msg, true );
 	}
 
 	public MsgContext( svmsg.Server _msg, bool isAsk )
 	{
-		msg = _msg;
+		m = _msg;
 		wait = isAsk ? new EventWaitHandle(false, EventResetMode.AutoReset) : null;
 		response = default;
 		task = new List<Task<Answer>>();
 	}
 }
 
-
-public partial class Service
+public partial class Handler
 {
-	public static Mgr mgr = null;
 
-	public lib.Token id { get; private set; }
-	public Ref<Service> sref { get { return new Ref<Service>(this); } }
-
-	public bool QueueHasMessages { get { return !m_q.IsEmpty; } }
-
-	public Service( lib.Token _id )
-	{
-		id = _id;
-	}
-
-	public void sendTo<T>( svmsg.Server msg, svc.Ref<T> sref, [CallerFilePath]string callerFilePath = "", [CallerMemberName]string callerMemberName = "", [CallerLineNumber]int callerLineNumber = 0 ) where T : Service
-	{
-		msg.setSender_fromService(this);
-		msg.setCaller_fromService(callerFilePath, callerMemberName, callerLineNumber);
-		sref.deliverDirectly(msg);
-	}
-
-	public void send( svmsg.Server msg, [CallerFilePath]string callerFilePath = "", [CallerMemberName]string callerMemberName = "", [CallerLineNumber]int callerLineNumber = 0 )
-	{
-		msg.setSender_fromService(this);
-		msg.setCaller_fromService(callerFilePath, callerMemberName, callerLineNumber);
-		mgr.send_fromService(msg);
-	}
-
-	public Task<Answer[]> ask( svmsg.Server msg, [CallerFilePath]string callerFilePath = "", [CallerMemberName]string callerMemberName = "", [CallerLineNumber]int callerLineNumber = 0 )
-	{
-		msg.setSender_fromService(this);
-		msg.setCaller_fromService(callerFilePath, callerMemberName, callerLineNumber);
-		return mgr.ask_fromService(msg);
-	}
-
-
-	public void deliver( svmsg.Server msg )
-	{
-		MsgContext c = new MsgContext( msg );
-		m_q.Enqueue(c);
-		m_event.Set();
-	}
-
-	public Task<Answer> deliverAsk( svmsg.Server msg )
-	{
-		MsgContext c = new MsgContext( msg, isAsk: true );
-		m_q.Enqueue(c);
-
-
-		var a = new Func<svc.Answer>(() =>
-		{
-			c.wait.WaitOne();
-			return c.response;
-		});
-
-		var t = new Task<svc.Answer>(a, TaskCreationOptions.LongRunning);
-		t.Start();
-
-		return t;
-	}
-
-	virtual public void run()
-	{
-	}
-
-	delegate void fnHandleGeneric<T>( svmsg.Server msg, Action<T> fn ) where T : class;
-
-	/*
-	void handleGeneric<T>( svmsg.Server msg, Action<T> fn ) where T : class
-	{
-		fn(msg as T);
-	}
-	*/
 
 	// Single threaded.  Non-reentrent
 	void procMsg( int maxCount )
@@ -291,11 +221,11 @@ public partial class Service
 			MsgContext c;
 			m_q.TryDequeue(out c);
 
-			if(c.msg != null)
+			if(c.m != null)
 			{
 				if(c.wait == null)
 				{
-					args[ 0 ] = c.msg.GetType();
+					args[ 0 ] = c.m.GetType();
 					Action<svmsg.Server> fn = null;
 
 					if(!m_handlingMethod.TryGetValue(args[ 0 ], out fn))
@@ -323,23 +253,23 @@ public partial class Service
 						{
 							//mm_params[ 0 ] = c.msg;
 
-							fn(c.msg);
+							fn( c.m );
 
 							//mi.Invoke( this, mm_params );
 						}
 						catch(Exception e)
 						{
-							lib.Log.warn("Exception while calling {0}.  {1}", c.msg.GetType(), e);
+							lib.Log.warn("Exception while calling {0}.  {1}", c.m.GetType(), e);
 						}
 					}
 					else
 					{
-						unhandled(c.msg);
+						unhandled( c.m );
 					}
 				}
 				else
 				{
-					args[ 0 ] = c.msg.GetType();
+					args[ 0 ] = c.m.GetType();
 
 					Func<svmsg.Server, object> fn;
 
@@ -347,28 +277,33 @@ public partial class Service
 					{
 						var mi = thisType.GetMethod("handleAsk", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, args, null);
 
-						ParameterExpression pe = Expression.Parameter(typeof(svmsg.Server), "msgIn");
+						if( mi != null )
+						{
+							ParameterExpression pe = Expression.Parameter(typeof(svmsg.Server), "msgIn");
 
-						var exConvert = Expression.Convert(pe, args[ 0 ]);
+							var exConvert = Expression.Convert(pe, args[ 0 ]);
 
-						var exParams = new Expression[ 1 ];
-						exParams[ 0 ] = exConvert;
+							var exParams = new Expression[ 1 ];
+							exParams[ 0 ] = exConvert;
 
-						var exThis = Expression.Constant(this);
-						var exCall = Expression.Call(exThis, mi, exParams);
+							var exThis = Expression.Constant(this);
+							var exCall = Expression.Call(exThis, mi, exParams);
 
-						fn = Expression.Lambda<Func<svmsg.Server, object>>(exCall, pe).Compile();
+							fn = Expression.Lambda<Func<svmsg.Server, object>>(exCall, pe).Compile();
 
-						m_handlingAsk[ args[ 0 ] ] = fn;
+							m_handlingAsk[ args[ 0 ] ] = fn;
+						}
 					}
 
 					if(fn != null)
 					{
 						try
 						{
-							object resp = fn( c.msg );
+							object resp = fn( c.m );
 
-							c.response = new Answer(new Ref<Service>(this), resp);
+							var svc = service();
+
+							c.response = new Answer(new Ref<Service>(svc), resp);
 
 							c.wait.Set();
 
@@ -376,12 +311,12 @@ public partial class Service
 						}
 						catch(Exception e)
 						{
-							lib.Log.warn("Exception while calling {0}.  {1}", c.msg.GetType(), e);
+							lib.Log.warn("Exception while calling {0}.  {1}", c.m.GetType(), e);
 						}
 					}
 					else
 					{
-						unhandled( c.msg );
+						unhandled( c.m );
 					}
 
 					//time.Stop();
@@ -396,7 +331,12 @@ public partial class Service
 		}
 	}
 
-	private void unhandled( Server msg )
+	public virtual Service service()
+	{
+		throw new NotImplementedException();
+	}
+
+	private void unhandled( svmsg.Server msg )
 	{
 		throw new NotImplementedException();
 	}
@@ -417,23 +357,111 @@ public partial class Service
 		m_handlingMethod[ msgType ] = fn;
 	}
 
+
+	//This event allows us to have a very light service that mostly sleeps until it gets a message
+	protected EventWaitHandle m_event = new EventWaitHandle( false, EventResetMode.ManualReset );
+
+	protected ConcurrentQueue<MsgContext> m_q															= new ConcurrentQueue<MsgContext>();
+	protected Dictionary<Type, Action<svmsg.Server>> m_handlingMethod			= new Dictionary<Type, Action<svmsg.Server>>();
+	protected Dictionary<Type, Func<svmsg.Server, object>> m_handlingAsk	= new Dictionary<Type, Func<svmsg.Server, object>>();
+
+	protected uint m_qMax = 10000;
+}
+
+
+
+public partial class Service : Handler
+{
+	public static Mgr s_mgr = null;
+
+	public lib.Token id { get; private set; }
+	public Ref<Service> sref { get { return new Ref<Service>(this); } }
+
+	public bool QueueHasMessages { get { return !m_q.IsEmpty; } }
+
+	public Service( lib.Token _id )
+	{
+		id = _id;
+	}
+
+	
+	public override Service service()
+	{
+		return this;
+	}
+
+
+	public void sendTo<T>( svmsg.Server msg, svc.Ref<T> sref, [CallerFilePath]string callerFilePath = "", [CallerMemberName]string callerMemberName = "", [CallerLineNumber]int callerLineNumber = 0 ) where T : Service
+	{
+		msg.setSender_fromService(this);
+		msg.setCaller_fromService(callerFilePath, callerMemberName, callerLineNumber);
+		sref.deliverDirectly(msg);
+	}
+
+	public void send( svmsg.Server msg, [CallerFilePath]string callerFilePath = "", [CallerMemberName]string callerMemberName = "", [CallerLineNumber]int callerLineNumber = 0 )
+	{
+		msg.setSender_fromService(this);
+		msg.setCaller_fromService(callerFilePath, callerMemberName, callerLineNumber);
+		s_mgr.send_fromService(msg);
+	}
+
+	public Task<Answer[]> ask( svmsg.Server msg, [CallerFilePath]string callerFilePath = "", [CallerMemberName]string callerMemberName = "", [CallerLineNumber]int callerLineNumber = 0 )
+	{
+		msg.setSender_fromService(this);
+		msg.setCaller_fromService(callerFilePath, callerMemberName, callerLineNumber);
+		return s_mgr.ask_fromService(msg);
+	}
+
+
+	public void deliver( svmsg.Server msg )
+	{
+		MsgContext c = MsgContext.msg( msg );
+		m_q.Enqueue(c);
+		m_event.Set();
+	}
+
+	public Task<Answer> deliverAsk( svmsg.Server msg )
+	{
+		MsgContext c = MsgContext.ask( msg );
+		m_q.Enqueue(c);
+
+
+		var a = new Func<svc.Answer>(() =>
+		{
+			c.wait.WaitOne();
+			return c.response;
+		});
+
+		var t = new Task<svc.Answer>(a, TaskCreationOptions.LongRunning);
+		t.Start();
+
+		return t;
+	}
+
+	virtual public void run()
+	{
+	}
+
+	//delegate void fnHandleGeneric<T>( svmsg.Server msg, Action<T> fn ) where T : class;
+
+	/*
+	void handleGeneric<T>( svmsg.Server msg, Action<T> fn ) where T : class
+	{
+		fn(msg as T);
+	}
+	*/
+
+
 	internal StRunning Running => new StRunning();
 
 	Random m_rand = new Random();
 
 
-	ConcurrentQueue<MsgContext> m_q = new ConcurrentQueue<MsgContext>();
 
-	//This event allows us to have a very light service that mostly sleeps until it gets a message
-	EventWaitHandle m_event = new EventWaitHandle( false, EventResetMode.ManualReset );
 
-	Dictionary<Type, Action<svmsg.Server>> m_handlingMethod	= new Dictionary<Type, Action<svmsg.Server>>();
-	Dictionary<Type, Func<svmsg.Server, object>> m_handlingAsk		= new Dictionary<Type, Func<svmsg.Server, object>>();
-
-	uint m_qMax = 100;
 }
 
-
+// Handlers
 public partial class Service
 {
 	public virtual void handle( svmsg.ServiceReady ready )
@@ -450,11 +478,6 @@ public partial class Service
 		return ping;
 	}
 }
-
-
-
-
-
 
 
 }

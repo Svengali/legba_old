@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace svmsg
@@ -95,17 +93,6 @@ public class FilterRoundRobin : Filter
 	private List<svc.Service> m_svcs = new List<svc.Service>( 8 );
 }
 #endregion
-
-public class ServiceAttribute : Attribute
-{
-
-}
-
-[Service]
-interface IService
-{
-
-}
 
 
 #region Messages

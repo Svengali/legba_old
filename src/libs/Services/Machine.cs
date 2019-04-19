@@ -67,7 +67,7 @@ public class Machine : ServiceWithConfig<MachineCfg>
 
 					svc.Service s = (svc.Service)cons.Invoke( parms );
 
-					svc.Service.mgr.start( s );
+					svc.Service.s_mgr.start( s );
 				}
 				catch( Exception e )
 				{

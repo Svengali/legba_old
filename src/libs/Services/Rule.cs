@@ -11,25 +11,25 @@ namespace svc
 
 
 [Serializable]
-public class PhysicsCfg : lib.Config
+public class RuleCfg : lib.Config
 {
 	[lib.Desc( "0: Worker count is cores - 1\n<0: Worker count is cores - coresAdj\n>0: Absolute worker count" )]
 	public int coresAdj = 0;
 }
 
-public partial class Physics : ServiceWithConfig<PhysicsCfg>
+public partial class Rule : ServiceWithConfig<RuleCfg>
 {
-	public Physics( lib.Token _id, res.Ref<PhysicsCfg> _cfg )
+	public Rule( lib.Token _id, res.Ref<RuleCfg> _cfg )
 		: base( _id, _cfg )
 	{
 		addHandler( typeof(svmsg.SpawnEnt), handleAll );
 
-		m_mgr = new WorkerMgr<PhysicsWorker>();
+		m_mgr = new WorkerMgr<RuleWorker>();
 
 		m_mgr.createWorkers( Environment.ProcessorCount / 2, create );
 	}
 
-	PhysicsWorker create() => new PhysicsWorker( this );
+	RuleWorker create() => new RuleWorker( this );
 
 	public void handleAll( msg.Msg msg )
 	{
@@ -42,22 +42,22 @@ public partial class Physics : ServiceWithConfig<PhysicsCfg>
 		
 	}
 
-	WorkerMgr<PhysicsWorker> m_mgr;
+	WorkerMgr<RuleWorker> m_mgr;
 }
 
 //Handlers
-public partial class PhysicsWorker : Worker
+public partial class RuleWorker : Worker
 {
 	public void handle( svmsg.SpawnEnt msg )
 	{
 	}
 }
 
-public partial class PhysicsWorker : Worker
+public partial class RuleWorker : Worker
 {
-	public PhysicsWorker( Physics phy )
+	public RuleWorker( Rule phy )
 	{
-		m_physics = phy;
+		m_rule = phy;
 
 
 	}
@@ -65,7 +65,7 @@ public partial class PhysicsWorker : Worker
 	
 	public override Service service()
 	{
-		return m_physics;
+		return m_rule;
 	}
 
 
@@ -82,7 +82,7 @@ public partial class PhysicsWorker : Worker
 	
 
 
-	Physics m_physics;
+	Rule m_rule;
 
 }
 

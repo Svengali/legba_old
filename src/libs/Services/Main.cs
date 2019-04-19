@@ -148,7 +148,7 @@ public class Main
 		//First of all start the machine service
 		var machineCfg = res.Mgr.load<svc.MachineCfg>( m_cfg.res.machineCfg );
 		m_machine = new svc.Machine( new lib.Token( machineName ), machineCfg );
-		svc.Service.mgr.start( m_machine );
+		svc.Service.s_mgr.start( m_machine );
 
 		//TODO: Move these into machine startup.
 		tick();
@@ -178,7 +178,7 @@ public class Main
 
 		m_machine.send( shutdown );
 
-		svc.Service.mgr.processMessages();
+		svc.Service.s_mgr.processMessages();
 	}
 
 
@@ -206,9 +206,9 @@ public class Main
 
 		//svc.Service.mgr.send( tick );
 
-		svc.Service.mgr.procMsg_block( 1000 );
+		svc.Service.s_mgr.procMsg_block( 1000 );
 
-		checkAndAddDirectory( "" );
+		//checkAndAddDirectory( "" );
 
 		if( m_listener.Pending() )
 		{
@@ -238,15 +238,15 @@ public class Main
 
 	res.Ref<ServerCfg> m_cfg;
 
-	private TcpListener m_listener;
+	TcpListener m_listener;
 
-	private lib.XmlFormatter2 m_formatter = new lib.XmlFormatter2();
+	lib.XmlFormatter2 m_formatter = new lib.XmlFormatter2();
 
-	private List<net.Conn> m_cnx = new List<net.Conn>();
+	List<net.Conn> m_cnx = new List<net.Conn>();
 
-	private svc.Mgr m_svcMgr;
+	svc.Mgr m_svcMgr;
 
-	private svc.Machine m_machine;
+	svc.Machine m_machine;
 
 }
 

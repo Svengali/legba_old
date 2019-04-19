@@ -87,6 +87,7 @@ public partial class ComAdmin : Component
 
 public partial interface IEntity
 {
+	EntityId Id { get; }
 	Optional<T> Com<T>() where T : class;
 }
 
@@ -107,9 +108,13 @@ public struct EntityId
 	}
 }
 
+
 [gen.NetView( All )]
 public partial class Entity : IEntity
 {
+	public EntityId Id => m_id;
+
+
 	EntityId m_id;
 	ImmutableDictionary<string, Component> m_coms;
 

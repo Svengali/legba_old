@@ -13,7 +13,7 @@ public class Mgr
 {
 	public Mgr()
 	{
-		Service.mgr = this;
+		Service.s_mgr = this;
 	}
 
 	public void start( Service svc )
@@ -36,10 +36,7 @@ public class Mgr
 	public Task<Answer[]> ask_fromService( svmsg.Server msg )
 	{
 
-		var c = new MsgContext();
-		c.msg = msg;
-		c.wait = new EventWaitHandle(false, EventResetMode.AutoReset);
-		c.task = new List<Task<Answer>>();
+		var c = MsgContext.ask( msg );
 		m_q.Enqueue(c);
 		m_wait.Set();
 
@@ -119,25 +116,25 @@ public class Mgr
 			MsgContext c;
 			m_q.TryDequeue(out c);
 
-			if(c.msg != null)
+			if(c.m != null)
 			{
 				if(c.wait == null)
 				{
-					procMsg(c.msg);
+					procMsg(c.m);
 				}
 				else
 				{
 					foreach(var p in m_services)
 					{
-						if(c.msg.filter.pass(p.Value))
+						if(c.m.filter.pass(p.Value))
 						{
-							var t = p.Value.deliverAsk(c.msg);
+							var t = p.Value.deliverAsk(c.m);
 							if(t != null)
 								c.task.Add(t);
 						}
 					}
 
-					var tf = c.msg.filter.deliverAsk(c.msg);
+					var tf = c.m.filter.deliverAsk( c.m );
 					if(tf != null)
 						c.task.Add(tf);
 

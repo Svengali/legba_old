@@ -20,72 +20,6 @@ using System.Reflection;
 namespace SimpleServer
 {
 
-class BaseState
-{
-
-
-	/*
-	public onEnter( BaseState from ) {}
-
-	public onExit( BaseState to ) {}
-	*/
-
-
-
-}
-
-
-
-
-
-
-
-class FSM
-{
-
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 class TestMsg
 {
@@ -289,6 +223,10 @@ static class Program
 		lib.Log.info( "This machine has {0} processors.", Environment.ProcessorCount );
 		lib.Log.info( "Running as {0}", Environment.UserName );
 
+		lib.Log.info( $"Running on CLR {Environment.Version}" );
+		lib.Log.info( $"Currently given {Environment.WorkingSet} memory" );
+
+		
 
 		var test = new TestCalls();
 		test.runAllTests();
