@@ -7,12 +7,6 @@ using System.Threading;
 namespace svc
 {
 
-
-
-
-
-
-
 public class Worker : Handler
 {
 	public bool Running => m_running;

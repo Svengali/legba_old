@@ -16,6 +16,8 @@ run/server/save/
 [Pp]ackage[Cc]ache/
 [Ss]hader[Cc]ache/
 
+/Temp/*
+
 # Never ignore Asset meta data
 !/[Aa]ssets/**/*.meta
 
