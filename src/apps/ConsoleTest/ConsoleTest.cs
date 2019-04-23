@@ -1,49 +1,91 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using Konsole;
+using Konsole.Drawing;
 
 namespace ConsoleTest
 {
+static partial class Util
+{
+	// TODO Write this!
+	public static int Count<T>( this IEnumerable<T> en )
+	{
+		return 0;
+	}
+
+}
+
+
+
 	class ConsoleTest
 	{
+
+
 		static void Main( string[] args )
 		{
+			Console.Clear();
+
+			
+
 			Console.WriteLine($"Make zero size files in directory {args[ 1 ]} from directory {args[ 0 ]}");
 
 			var pathFrom = args[ 0 ];
 			var pathTo = args[ 1 ];
 
-			var files = Directory.EnumerateFiles(pathFrom);
+			var files = Directory.GetFiles( pathFrom );
 
-			foreach(var fullpath in files)
-			{
-				var dir = Path.GetDirectoryName( fullpath );
-				var fileShortname = Path.GetFileName( fullpath );
+			var tasks = new List<Task>();
+			var bars = new ConcurrentBag<ProgressBar>();
 
-				Console.WriteLine( $"Processing file {fileShortname}" );
+			var con = Window.Open( 0, 5, 132, 40, "Errors", 
+                  LineThickNess.Double,ConsoleColor.White,ConsoleColor.Blue);
 
-				var newFilename = $"{pathTo}\\{fileShortname}";
+			tasks.Add( Task.Run( () => {
+				
+				var bar = new ProgressBar( PbStyle.DoubleLine, files.Length );
 
-				try
+				bars.Add( bar );
+
+
+
+				for( int i = 0; i < files.Length; ++i )
 				{
-					using( var newFile = File.Open( newFilename, FileMode.CreateNew ) )
+					var fullpath = files[i];
+					var dir = Path.GetDirectoryName( fullpath );
+					var fileShortname = Path.GetFileName( fullpath );
+
+					bar.Refresh( i + 1, fullpath );
+
+					var newFilename = $"{pathTo}\\{fileShortname}";
+
+					try
 					{
+						using( var newFile = File.Open( newFilename, FileMode.CreateNew ) )
+						{
+						}
+
+					}
+					catch( Exception ex )
+					{
+						con.WriteLine( $"Caught {ex.Message}" );
 					}
 
 				}
-				catch( Exception ex )
-				{
-					Console.WriteLine( $"Caught {ex.Message}" );
-				}
+			}));
 
-				var timer = new lib.Timer().Start();
+			Task.WaitAll( tasks.ToArray() );
+			Console.WriteLine( "done" );
 
-				while( timer.DurationMS > 10_000 && !Console.KeyAvailable ) {}
+			var timer = new lib.Timer().Start();
+
+			while( timer.CurrentMS < 10_000 && !Console.KeyAvailable )
+			{
+				Thread.Sleep(10);
 			}
-
 
 
 		}

@@ -7,3 +7,6 @@
 [submodule "src/libs/orleans"]
 	path = src/libs/orleans
 	url = https://github.com/Svengali/orleans
+[submodule "src/libs/konsole"]
+	path = src/libs/konsole
+	url = https://github.com/Svengali/konsole

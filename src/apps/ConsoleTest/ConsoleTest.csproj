@@ -90,6 +90,10 @@
       <Project>{88c704da-40ff-404c-936c-7bbdac1fb0b0}</Project>
       <Name>GenCaseClass</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\libs\konsole\Konsole\Konsole.csproj">
+      <Project>{90808a57-0462-4d92-94f8-da95b7931895}</Project>
+      <Name>Konsole</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\libs\SharpLib\SharpLib.csproj">
       <Project>{ded134fc-c282-49c9-ba02-3ce6257e91fc}</Project>
       <Name>SharpLib</Name>
