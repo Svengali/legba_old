@@ -39,6 +39,9 @@ namespace ConsoleTest
 					Console.WriteLine( $"Caught {ex.Message}" );
 				}
 
+				var timer = new lib.Timer().Start();
+
+				while( timer.DurationMS > 10_000 && !Console.KeyAvailable ) {}
 			}
 
 

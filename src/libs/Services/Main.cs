@@ -84,7 +84,7 @@ public class Main
 
 			var filestream = new FileStream( "serTest.xml", FileMode.Create );
 
-			var formatter = new lib.XmlFormatter2();
+			var formatter = new lib.XmlFormatter2( "serTest.xml" );
 
 			formatter.Serialize( filestream, serTest );
 
@@ -92,7 +92,7 @@ public class Main
 
 			filestream = new FileStream( "serTest.xml", FileMode.Open );
 
-			formatter = new lib.XmlFormatter2();
+			formatter = new lib.XmlFormatter2( "serTest.xml" );
 
 			var serTestLoad = formatter.Deserialize( filestream ) as SerializationTest;
 
@@ -217,7 +217,7 @@ public class Main
 			Socket socket = m_listener.AcceptSocket();
 
 
-			net.Conn conn = new net.Conn( socket, m_formatter );
+			net.Conn conn = new net.Conn( socket, new lib.XmlFormatter2( "<network>" ) );
 
 			m_cnx.Add( conn );
 
@@ -239,8 +239,6 @@ public class Main
 	res.Ref<ServerCfg> m_cfg;
 
 	TcpListener m_listener;
-
-	lib.XmlFormatter2 m_formatter = new lib.XmlFormatter2();
 
 	List<net.Conn> m_cnx = new List<net.Conn>();
 

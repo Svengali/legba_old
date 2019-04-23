@@ -16,12 +16,6 @@ using SF = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace gen
 {
-
-
-
-
-
-
 	public class CaseClassGen : ICodeGenerator
 	{
 		private readonly AttributeData m_attributeData;
@@ -94,6 +88,9 @@ namespace gen
 				}
 
 				var leadingTrivia = $"{fieldsComment}\r\n";
+
+
+				#region Comments for debugging
 
 				var useDirectName = m_context.Compilation.GetTypeByMetadataName( "net.View" );
 
@@ -169,7 +166,7 @@ namespace gen
 					}
 				}
 
-
+				#endregion
 
 				//var newUsing = SF.UsingDirective( SF.IdentifierName( "" ) );
 
@@ -564,10 +561,12 @@ namespace gen
 				.Add( SF.Token( SyntaxKind.StaticKeyword ) )
 				.Add( SF.Token( SyntaxKind.ReadOnlyKeyword ) );
 
+			/* No longer needed.
 			if( m_baseSym.SpecialType != SpecialType.System_Object )
 			{
 				keywords = keywords.Add( SF.Token( SyntaxKind.NewKeyword ) );
 			}
+			*/
 
 			var field = SF.FieldDeclaration( decl )
 				.WithModifiers( keywords );

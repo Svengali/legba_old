@@ -188,9 +188,9 @@ public class ServiceReady : Server
 [Serializable]
 class MsgRecv : Server
 {
-	public uint			id;
+	///public uint			id;
 	///public svc.Conn c;
-	public msg.Msg	msg;
+	///public msg.Msg	msg;
 }
 
 [Serializable]

@@ -54,7 +54,7 @@ public class DB
 
 
 
-	ImmutableDictionary<ent.EntityId, ent.Entity> m_entities;
+	ImmutableDictionary<ent.EntityId, ent.Entity> m_entities = ImmutableDictionary<ent.EntityId, ent.Entity>.Empty;
 
 	ImmutableDictionary<ent.EntityId, ent.Entity> m_checkouts;
 

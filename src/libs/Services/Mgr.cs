@@ -199,7 +199,7 @@ public class Mgr
 
 		var filestream = new FileStream(path, FileMode.Open);
 
-		var formatter = new lib.XmlFormatter2();
+		var formatter = new lib.XmlFormatter2( filename );
 
 		object obj = formatter.Deserialize(filestream);
 

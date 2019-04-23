@@ -53,7 +53,7 @@ public class WorkerMgr<TWORKER> where TWORKER: Worker
 	}
 
 
-	ImmutableList<WorkerThreads<TWORKER>> m_workers;
+	ImmutableList<WorkerThreads<TWORKER>> m_workers = ImmutableList<WorkerThreads<TWORKER>>.Empty;
 }
 
 

@@ -514,11 +514,6 @@ namespace gen
 				.Add( SF.Token( SyntaxKind.StaticKeyword ) )
 				.Add( SF.Token( SyntaxKind.ReadOnlyKeyword ) );
 
-			if( m_baseSym.SpecialType != SpecialType.System_Object )
-			{
-				keywords = keywords.Add( SF.Token( SyntaxKind.NewKeyword ) );
-			}
-
 			var field = SF.FieldDeclaration( decl )
 				.WithModifiers( keywords );
 
