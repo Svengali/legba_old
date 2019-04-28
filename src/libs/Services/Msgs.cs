@@ -153,12 +153,12 @@ public class MsgsProcessed : svmsg.Server
 }
 
 [Serializable]
-class Shutdown : svmsg.Server
+public class Shutdown : svmsg.Server
 {
 }
 
 [Serializable]
-class StartService : Server
+public class StartService : Server
 {
 	public string type;
 	public string configPath;

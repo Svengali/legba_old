@@ -85,6 +85,18 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\libs\serilog-sinks-elasticsearch\src\Serilog.Formatting.Elasticsearch\Serilog.Formatting.Elasticsearch.csproj">
+      <Project>{eceb6858-36e7-4053-a9cc-8fa70f6ed12c}</Project>
+      <Name>Serilog.Formatting.Elasticsearch</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\libs\serilog-sinks-elasticsearch\src\Serilog.Sinks.Elasticsearch\Serilog.Sinks.Elasticsearch.csproj">
+      <Project>{2bb1c596-339a-449c-917d-e40fd4883619}</Project>
+      <Name>Serilog.Sinks.Elasticsearch</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\libs\serilog\src\Serilog\Serilog.csproj">
+      <Project>{28524f20-173d-4a5a-8d4c-87ee4e9d216c}</Project>
+      <Name>Serilog</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\libs\Services\Services.csproj">
       <Project>{768dc46c-c48e-4320-9760-e2dd47bfaa51}</Project>
       <Name>Services</Name>

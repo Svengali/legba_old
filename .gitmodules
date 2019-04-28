@@ -10,3 +10,21 @@
 [submodule "src/libs/konsole"]
 	path = src/libs/konsole
 	url = https://github.com/Svengali/konsole
+[submodule "src/libs/Discord.Net"]
+	path = src/libs/Discord.Net
+	url = https://github.com/Svengali/Discord.Net
+[submodule "src/libs/discord-rpc-csharp"]
+	path = src/libs/discord-rpc-csharp
+	url = https://github.com/Svengali/discord-rpc-csharp
+[submodule "src/libs/NLog"]
+	path = src/libs/NLog
+	url = https://github.com/Svengali/NLog
+[submodule "src/libs/NLog.Targets.ElasticSearch"]
+	path = src/libs/NLog.Targets.ElasticSearch
+	url = https://github.com/Svengali/NLog.Targets.ElasticSearch
+[submodule "src/libs/serilog"]
+	path = src/libs/serilog
+	url = https://github.com/Svengali/serilog
+[submodule "src/libs/serilog-sinks-elasticsearch"]
+	path = src/libs/serilog-sinks-elasticsearch
+	url = https://github.com/Svengali/serilog-sinks-elasticsearch

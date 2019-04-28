@@ -7,7 +7,10 @@ using lib;
 
 namespace svc
 {
+public interface ISvcPhysics: IService
+{
 
+}
 
 
 [Serializable]
@@ -17,7 +20,7 @@ public class PhysicsCfg : lib.Config
 	public int coresAdj = 0;
 }
 
-public partial class Physics : ServiceWithConfig<PhysicsCfg>
+public partial class Physics : ServiceWithConfig<PhysicsCfg>, ISvcPhysics
 {
 	public Physics( lib.Token _id, res.Ref<PhysicsCfg> _cfg )
 		: base( _id, _cfg )

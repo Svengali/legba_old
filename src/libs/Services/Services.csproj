@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Discord.Net\src\Discord.Net.WebSocket\Discord.Net.WebSocket.csproj" />
     <ProjectReference Include="..\NetCore\NetCore.csproj" />
     <ProjectReference Include="..\SharpLib\SharpLib.csproj" />
   </ItemGroup>

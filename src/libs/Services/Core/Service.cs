@@ -14,7 +14,7 @@ using System.Collections.Immutable;
 namespace svc
 {
 
-	[Serializable]
+[Serializable]
 public struct Ref<T> where T : Service
 {
 	public Type type { get { return m_type; } }
@@ -370,7 +370,7 @@ public partial class Handler
 
 
 
-public partial class Service : Handler
+public partial class Service : Handler, IService
 {
 	public static Mgr s_mgr = null;
 
@@ -379,9 +379,12 @@ public partial class Service : Handler
 
 	public bool QueueHasMessages { get { return !m_q.IsEmpty; } }
 
+	public ImmutableList<Type> Services { get; private set; }
+
 	public Service( lib.Token _id )
 	{
 		id = _id;
+		gatherServices();
 	}
 
 	
@@ -390,6 +393,26 @@ public partial class Service : Handler
 		return this;
 	}
 
+	void gatherServices()
+	{
+		var iserviceType = typeof( IService );
+
+		var allInterfaces = GetType().GetInterfaces();
+
+		var bldServices = ImmutableList<Type>.Empty.ToBuilder();
+
+		foreach( var iface in allInterfaces )
+		{
+			if( iface == iserviceType ) continue;
+
+			if( iserviceType.IsAssignableFrom( iface ) )
+			{
+				bldServices.Add( iface );
+			}
+		}
+
+		Services = bldServices.ToImmutable();
+	}
 
 	public void sendTo<T>( svmsg.Server msg, svc.Ref<T> sref, [CallerFilePath]string callerFilePath = "", [CallerMemberName]string callerMemberName = "", [CallerLineNumber]int callerLineNumber = 0 ) where T : Service
 	{

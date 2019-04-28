@@ -8,7 +8,10 @@ using lib;
 namespace svc
 {
 
+public interface ISvcRule
+{
 
+}
 
 [Serializable]
 public class RuleCfg : lib.Config
@@ -17,7 +20,7 @@ public class RuleCfg : lib.Config
 	public int coresAdj = 0;
 }
 
-public partial class Rule : ServiceWithConfig<RuleCfg>
+public partial class Rule : ServiceWithConfig<RuleCfg>, ISvcRule
 {
 	public Rule( lib.Token _id, res.Ref<RuleCfg> _cfg )
 		: base( _id, _cfg )

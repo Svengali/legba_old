@@ -13,12 +13,20 @@ using System.Linq.Expressions;
 namespace svc
 {
 
+
+public interface IMachine: IService
+{
+	void handle( svmsg.StartService start );
+}
+
+
+
 [Serializable]
 public class MachineCfg : lib.Config
 {
 }
 
-public class Machine : ServiceWithConfig<MachineCfg>
+public class Machine : ServiceWithConfig<MachineCfg>, IMachine
 {
 	public Machine( lib.Token _id, res.Ref<MachineCfg> _cfg )
 		: base( _id, _cfg )
@@ -39,7 +47,7 @@ public class Machine : ServiceWithConfig<MachineCfg>
 		m_running = false;
 	}
 
-	void handle( svmsg.StartService start )
+	public void handle( svmsg.StartService start )
 	{
 		Type[] types = new Type[ 2 ];
 		object[] parms = new object[ 2 ];
