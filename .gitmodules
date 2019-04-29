@@ -28,3 +28,12 @@
 [submodule "src/libs/serilog-sinks-elasticsearch"]
 	path = src/libs/serilog-sinks-elasticsearch
 	url = https://github.com/Svengali/serilog-sinks-elasticsearch
+[submodule "src/libs/serilog-sinks-async"]
+	path = src/libs/serilog-sinks-async
+	url = https://github.com/Svengali/serilog-sinks-async
+[submodule "src/libs/serilog-sinks-file"]
+	path = src/libs/serilog-sinks-file
+	url = https://github.com/Svengali/serilog-sinks-file
+[submodule "src/libs/serilog-sinks-console"]
+	path = src/libs/serilog-sinks-console
+	url = https://github.com/Svengali/serilog-sinks-console
