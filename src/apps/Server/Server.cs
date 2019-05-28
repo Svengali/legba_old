@@ -81,8 +81,35 @@ class TestCalls
 		lib.Log.info( "testInvoke: {0}", endMs );
 	}
 
+	public delegate void dlgHandler( TestMsg msg );
+
 	public void testDelegate()
 	{
+		/*
+		var args = new Type[1];
+		args[0]=typeof( TestMsg );
+
+		var mi = GetType().GetMethod( "handle", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, args, null );
+
+		var cb = mi.CreateDelegate( typeof(dlgHandler) );
+
+		var o = new TestMsg();
+
+		var timer = new lib.Timer();
+
+		timer.Start();
+		for( int i = 0; i< m_runCount; ++i )
+		{
+			cb.DynamicInvoke( o );
+		}
+		var endMs = timer.CurrentMS;
+
+		lib.Log.info( "testDelegate: {0}", endMs );
+		/*/
+		lib.Log.info( "testDelegate: OFF" );
+		//*/
+
+
 	}
 
 	public void testExpression()
