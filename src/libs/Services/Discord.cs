@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
-using lib;
+//using lib;
 
 namespace svc
 {
@@ -47,8 +47,8 @@ public partial class Discord : ServiceWithConfig<DiscordCfg>, ISvcTextOutput
 		m_client = new DiscordSocketClient();
 
 		m_client.Log += CBLogAsync;
-		m_client.Ready += CBReadyAsync;
-		m_client.MessageReceived += CBMessageReceivedAsync;
+		m_client.Ready += Ready_cb;
+		m_client.MessageReceived += MessageReceived_cb;
 
 	}
 
@@ -79,7 +79,7 @@ public partial class Discord : ServiceWithConfig<DiscordCfg>, ISvcTextOutput
 
   // The Ready event indicates that the client has opened a
   // connection and it is now safe to access the cache.
-  private Task CBReadyAsync()
+  private Task Ready_cb()
   {
       Console.WriteLine($"{m_client.CurrentUser} is connected!");
 
@@ -96,7 +96,7 @@ public partial class Discord : ServiceWithConfig<DiscordCfg>, ISvcTextOutput
 
   // This is not the recommended way to write a bot - consider
   // reading over the Commands Framework sample.
-  private async Task CBMessageReceivedAsync(SocketMessage message)
+  private async Task MessageReceived_cb(SocketMessage message)
   {
       // The bot should never respond to itself.
       if (message.Author.Id == m_client.CurrentUser.Id)
