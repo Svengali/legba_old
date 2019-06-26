@@ -59,7 +59,7 @@ public struct Ref<T> where T : Service
 }
 
 #region MixinsAndStates
-
+/*
 [AttributeUsage(validOn: AttributeTargets.Class,  AllowMultiple = true)]
 public class MixinAttribute : Attribute
 {
@@ -154,7 +154,7 @@ public class StRunning : StBase
 
 
 }
-
+*/
 #endregion
 
 
@@ -214,7 +214,7 @@ public partial class Handler
 			m_qMax = (uint)m_q.Count;
 		}
 
-		maxCount = math.fn.Max(maxCount, m_q.Count);
+		maxCount = Math.Max( maxCount, m_q.Count );
 
 		while(maxCount-- > 0 && m_q.Count > 0)
 		{
@@ -475,7 +475,7 @@ public partial class Service : Handler, IService
 	*/
 
 
-	internal StRunning Running => new StRunning();
+	//internal StRunning Running => new StRunning();
 
 	Random m_rand = new Random();
 

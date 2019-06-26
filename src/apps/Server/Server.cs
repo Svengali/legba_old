@@ -52,7 +52,7 @@ class TestCalls
 		{
 			handle( o );
 		}
-		var endMs = timer.CurrentMS;
+		var endMs = timer.Current;
 
 		lib.Log.info( "testDirect: {0}", endMs );
 	}
@@ -76,7 +76,7 @@ class TestCalls
 		{
 			mi.Invoke( this, args );
 		}
-		var endMs = timer.CurrentMS;
+		var endMs = timer.Current;
 
 		lib.Log.info( "testInvoke: {0}", endMs );
 	}
@@ -140,7 +140,7 @@ class TestCalls
 		{
 			fn( o );
 		}
-		var endMs = timer.CurrentMS;
+		var endMs = timer.Current;
 
 		lib.Log.info( "testExpression: {0}", endMs );
 	}

@@ -72,7 +72,7 @@ public partial class ComHealth_Rule : ComHealth, IComHealth_Rule
 [gen.NetView( Rule )]
 public partial class ComPhysical : Component
 {
-	math.Vec3 m_pos;
+	//math.Vec3 m_pos;
 }
 
 

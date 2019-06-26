@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 //using System.Threading.Tasks;
 
+
+
 namespace msg
 {
 
@@ -19,6 +21,7 @@ public class Msg
 }
 
 #region Startup
+
 [Serializable]
 public class Login : Msg
 {
@@ -47,15 +50,18 @@ public class CreateRes : Msg
 	public bool result;
 }
 
+/*
 [Serializable]
 public class Begin : Entity
 {
 }
+*/
 
 [Serializable]
 public class Loaded : Msg
 {
 }
+
 #endregion
 
 #region Support
@@ -71,74 +77,77 @@ public class SendFile : Msg
 	public string path;
 	public byte[] file;
 }
-#endregion
+	#endregion
 
-#region Client -> Server
-[Serializable]
-public class MoveTo : Msg
-{
-	public math.Vec3 pos;
-	public math.Vec3 vel;
-	public float rot;
-}
 
-[Serializable]
-public class DebugTeleportTo : Msg
-{
-	public math.Vec3 pos;
-}
+	#region Client -> Server
 
-[Serializable]
-public class Fire : Msg
-{
-	//Types are explicitly named.  
-	public enum Slot
+	/*
+	[Serializable]
+	public class MoveTo : Msg
 	{
-		Invalid = 0,
-		Primary = 1,
-		Secondary = 2,
+		public math.Vec3 pos;
+		public math.Vec3 vel;
+		public float rot;
 	}
 
-	public Slot slot;
-	public math.Vec3 dir;
-}
-#endregion
+	[Serializable]
+	public class DebugTeleportTo : Msg
+	{
+		public math.Vec3 pos;
+	}
 
-#region Server -> Client
-[Serializable]
-public class Entity : Msg
-{
-	public uint id;
-}
+	[Serializable]
+	public class Fire : Msg
+	{
+		//Types are explicitly named.  
+		public enum Slot
+		{
+			Invalid = 0,
+			Primary = 1,
+			Secondary = 2,
+		}
 
-[Serializable]
-public class Spawn : Entity, HandleMgr
-{
-	public string configpath;
-	public math.Vec3 pos;
-}
+		public Slot slot;
+		public math.Vec3 dir;
+	}
+	#endregion
 
-[Serializable]
-public class Despawn : Entity, HandleMgr
-{
-}
+	#region Server -> Client
+	[Serializable]
+	public class Entity : Msg
+	{
+		public uint id;
+	}
 
-[Serializable]
-public class EntMove : Entity, HandleMgr
-{
-	public math.Vec3d pos;
-	public math.Vec3d vel;
-	public float rot;
-}
+	[Serializable]
+	public class Spawn : Entity, HandleMgr
+	{
+		public string configpath;
+		public math.Vec3 pos;
+	}
 
+	[Serializable]
+	public class Despawn : Entity, HandleMgr
+	{
+	}
 
-/*
-[Serializable]
-public class EntLoaded : Entity, HandleMgr
-{
-}
-*/
-#endregion
+	[Serializable]
+	public class EntMove : Entity, HandleMgr
+	{
+		public math.Vec3d pos;
+		public math.Vec3d vel;
+		public float rot;
+	}
+	*/
+
+	/*
+	[Serializable]
+	public class EntLoaded : Entity, HandleMgr
+	{
+	}
+	*/
+	#endregion
 
 
 

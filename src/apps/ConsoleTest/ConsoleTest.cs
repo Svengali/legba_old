@@ -82,7 +82,7 @@ static partial class Util
 
 			var timer = new lib.Timer().Start();
 
-			while( timer.CurrentMS < 10_000 && !Console.KeyAvailable )
+			while( timer.Current < 10_000 && !Console.KeyAvailable )
 			{
 				Thread.Sleep(10);
 			}

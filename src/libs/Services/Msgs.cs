@@ -198,7 +198,7 @@ public class SpawnViewer : Server
 {
 	public SpawnViewer( Filter _filter ) : base( _filter ) { }
 
-	public math.Vec3 pos;
+	///public math.Vec3 pos;
 	public float radius;
 	public uint context;
 }
@@ -220,8 +220,8 @@ public class SpawnEnt : Server
 {
 	public string config;
 	public string prefix;
-	public math.Vec3d pos;
-	public math.Vec3d dir;
+	///public math.Vec3d pos;
+	///public math.Vec3d dir;
 
 	public SpawnEnt( Filter _filter ) : base( _filter ) { }
 }
@@ -269,7 +269,7 @@ public class ToGame : Server
 public class DebugTeleportTo : Server
 {
 	///public ent.Ref ent;
-	public math.Vec3 to;
+	///public math.Vec3 to;
 }
 
 [Serializable]
@@ -277,8 +277,8 @@ public class EntSnapshot : Server
 {
 	public uint context;
 	///public ent.Ref ent;
-	public math.Vec3 pos;
-	public math.Vec3 vel;
+	///public math.Vec3 pos;
+	///public math.Vec3 vel;
 	public float rot;
 	public float damage;
 	public float energyUse;
