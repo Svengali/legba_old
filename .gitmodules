@@ -19,9 +19,6 @@
 [submodule "src/libs/NLog"]
 	path = src/libs/NLog
 	url = https://github.com/Svengali/NLog
-[submodule "src/libs/NLog.Targets.ElasticSearch"]
-	path = src/libs/NLog.Targets.ElasticSearch
-	url = https://github.com/Svengali/NLog.Targets.ElasticSearch
 [submodule "src/libs/elasticsearch-net"]
 	path = src/libs/elasticsearch-net
 	url = https://github.com/Svengali/elasticsearch-net
