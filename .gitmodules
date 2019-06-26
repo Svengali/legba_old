@@ -25,9 +25,6 @@
 [submodule "src/libs/serilog"]
 	path = src/libs/serilog
 	url = https://github.com/Svengali/serilog
-[submodule "src/libs/serilog-sinks-async"]
-	path = src/libs/serilog-sinks-async
-	url = https://github.com/Svengali/serilog-sinks-async
 [submodule "src/libs/elasticsearch-net"]
 	path = src/libs/elasticsearch-net
 	url = https://github.com/Svengali/elasticsearch-net
