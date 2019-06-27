@@ -77,19 +77,19 @@ public class Machine : ServiceWithConfig<MachineCfg>, IMachine
 
 					svc.Service.s_mgr.start( s );
 				}
-				catch( Exception e )
+				catch( Exception ex )
 				{
-					lib.Log.warn( "Exception while calling service constructor {0}", e );
+					lib.Log.error( $"Exception while calling service constructor {ex}" );
 				}
 			}
 			else
 			{
-				lib.Log.warn( "Could not find service of type {0}", start.type );
+				lib.Log.warn( $"Could not find service of type {start.type}" );
 			}
 		}
 		else
 		{
-			lib.Log.warn( "Could not find service of type {0}", start.type );
+			lib.Log.warn( $"Could not find service of type {start.type}" );
 		}
 	}
 

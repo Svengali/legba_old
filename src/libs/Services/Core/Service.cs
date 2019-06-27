@@ -210,7 +210,7 @@ public partial class Handler
 
 		if(m_qMax < m_q.Count)
 		{
-			lib.Log.warn("Service Q hit highwater of {0} in {1}.", m_q.Count, GetType());
+			lib.Log.warn( $"Service Q hit highwater of {m_q.Count} in {GetType()}." );
 			m_qMax = (uint)m_q.Count;
 		}
 
@@ -259,7 +259,7 @@ public partial class Handler
 						}
 						catch(Exception e)
 						{
-							lib.Log.warn("Exception while calling {0}.  {1}", c.m.GetType(), e);
+							lib.Log.error( $"Exception while calling { c.m.GetType()}.  {e}" );
 						}
 					}
 					else
@@ -309,9 +309,9 @@ public partial class Handler
 
 							//retEWH(c.wait);
 						}
-						catch(Exception e)
+						catch(Exception ex)
 						{
-							lib.Log.warn("Exception while calling {0}.  {1}", c.m.GetType(), e);
+							lib.Log.warn( $"Exception while calling {c.m.GetType()}.  Ex {ex}" );
 						}
 					}
 					else
@@ -496,7 +496,7 @@ public partial class Service
 	{
 		var dt = 0UL; //(ulong)sv.Main.main.clock.ms - ping.time;
 
-		lib.Log.info("Got ping {0}", dt);
+		lib.Log.info( $"Got ping {dt}" );
 
 		return ping;
 	}

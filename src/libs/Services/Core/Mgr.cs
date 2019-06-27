@@ -107,7 +107,7 @@ public class Mgr
 	{
 		if(m_qMax < m_q.Count)
 		{
-			lib.Log.warn("Service Q hit highwater of {0} in {1}.", m_q.Count, GetType());
+			lib.Log.warn( $"Service Q hit highwater of {m_q.Count} in {GetType()}." );
 			m_qMax = (uint)m_q.Count;
 		}
 

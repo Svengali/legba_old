@@ -85,17 +85,17 @@ public class Conn : lib.Conn
 				}
 				catch( Exception e )
 				{
-					lib.Log.warn( "Socket {0} had a problem.  Ex {1}.", Sock.RemoteEndPoint, e );
+					lib.Log.error( $"Socket {Sock.RemoteEndPoint} had a problem.  Ex {e}." );
 				}
 			}
 			catch( SocketException e )
 			{
-				lib.Log.warn( "Socket {0} had a problem.  Ex {1}.", Sock.RemoteEndPoint, e );
+				lib.Log.error($"Socket {Sock.RemoteEndPoint} had a problem.  Ex {e}.");
 				m_loop = false;
 			}
 			catch( IOException e )
 			{
-				lib.Log.warn( "Socket {0} had a problem.  Ex {1}.", Sock.RemoteEndPoint, e );
+				lib.Log.error($"Socket {Sock.RemoteEndPoint} had a problem.  Ex {e}.");
 				m_loop = false;
 			}
 		}
@@ -116,11 +116,12 @@ public class Conn : lib.Conn
 	private void asyncRecv( IAsyncResult ar )
 	{
 		int packetSize = Stream.EndRead( ar );
-		lib.Log.info( "Recieved {0}", packetSize );
+		lib.Log.info($"Recieved {packetSize}" );
 
 		if( !Sock.Connected || packetSize == 0 )
 		{
-			lib.Log.warn( "Socket {0} had a problem.  {1} recv {2} bytes.", Sock.RemoteEndPoint, Sock.Connected?"Connected":"Disconnected", packetSize );
+			var stuff = Sock.Connected?"Connected":"Disconnected";
+			lib.Log.warn($"Socket {Sock.RemoteEndPoint} had a problem. {stuff} recv {packetSize} bytes." );
 			m_loop = false;
 			return;
 		}
@@ -142,7 +143,7 @@ public class Conn : lib.Conn
 			recv.Position = 0;
 
 			var str = System.Text.Encoding.Default.GetString( mm_recvBuf );
-			lib.Log.info( "Received {0} in obj {1}.", packetSize, str );
+			lib.Log.info( $"Received {packetSize} in obj {str}." );
 
 			/*
 			for( int i = 0; i < packetSize; ++i )
@@ -162,20 +163,20 @@ public class Conn : lib.Conn
 		}
 		catch( SocketException e )
 		{
-			lib.Log.warn( "Socket {0} had a problem.  Ex {1}.", Sock.RemoteEndPoint, e );
+			lib.Log.error( $"Socket {Sock.RemoteEndPoint} had a problem.  Ex {e}." );
 			m_loop = false;
 		}
 		catch( IOException e )
 		{
-			lib.Log.warn( "Socket {0} had a problem.  Ex {1}.", Sock.RemoteEndPoint, e );
+			lib.Log.error($"Socket {Sock.RemoteEndPoint} had a problem.  Ex {e}.");
 			m_loop = false;
 		}
 		catch( Exception e )
 		{
-			lib.Log.warn( "Socket {0} had a problem.  Ex {1}.", Sock.RemoteEndPoint, e );
+			lib.Log.error($"Socket {Sock.RemoteEndPoint} had a problem.  Ex {e}.");
 		}
 
-		mm_recvWait.Set();
+			mm_recvWait.Set();
 	}
 
 }

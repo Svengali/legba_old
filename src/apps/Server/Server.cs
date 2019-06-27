@@ -54,7 +54,7 @@ class TestCalls
 		}
 		var endMs = timer.Current;
 
-		lib.Log.info( "testDirect: {0}", endMs );
+		lib.Log.info( $"testDirect: {endMs}" );
 	}
 
 	public void testInvoke()
@@ -78,10 +78,10 @@ class TestCalls
 		}
 		var endMs = timer.Current;
 
-		lib.Log.info( "testInvoke: {0}", endMs );
+		lib.Log.info( $"testInvoke: {endMs}" );
 	}
 
-	public delegate void dlgHandler( TestMsg msg );
+		public delegate void dlgHandler( TestMsg msg );
 
 	public void testDelegate()
 	{
@@ -106,13 +106,13 @@ class TestCalls
 
 		lib.Log.info( "testDelegate: {0}", endMs );
 		/*/
-		lib.Log.info( "testDelegate: OFF" );
+		lib.Log.info( $"testDelegate: OFF" );
 		//*/
 
 
-	}
+		}
 
-	public void testExpression()
+		public void testExpression()
 	{
 		var args = new Type[1];
 		args[0]=typeof( TestMsg );
@@ -142,10 +142,10 @@ class TestCalls
 		}
 		var endMs = timer.Current;
 
-		lib.Log.info( "testExpression: {0}", endMs );
+		lib.Log.info($"testExpression: {endMs}");
 	}
 
-	public void handle( TestMsg msg )
+		public void handle( TestMsg msg )
 	{
 	}
 
@@ -243,12 +243,12 @@ static class Program
 		c.Show();
 		*/
 
-		lib.Log.info( "Command line {0}", Environment.CommandLine );
-		lib.Log.info( "Current working directory {0}", Environment.CurrentDirectory );
-		lib.Log.info( "Running as {0}bit on a {1}bit machine.", Environment.Is64BitProcess?"64":"32", Environment.Is64BitOperatingSystem?"64":"32" );
-		lib.Log.info( "Running on {0}", Environment.OSVersion );
-		lib.Log.info( "This machine has {0} processors.", Environment.ProcessorCount );
-		lib.Log.info( "Running as {0}", Environment.UserName );
+		lib.Log.info( $"Command line {Environment.CommandLine}" );
+		lib.Log.info( $"Current working directory {Environment.CurrentDirectory}" );
+		lib.Log.info( $"Running as {(Environment.Is64BitProcess ? "64":"32")}bit on a {(Environment.Is64BitOperatingSystem?"64":"32")}bit machine." );
+		lib.Log.info( $"Running on {Environment.OSVersion}" );
+		lib.Log.info( $"This machine has {Environment.ProcessorCount} processors." );
+		lib.Log.info( $"Running as {Environment.UserName}" );
 
 		lib.Log.info( $"Running on CLR {Environment.Version}" );
 		lib.Log.info( $"Currently given {Environment.WorkingSet} memory" );
