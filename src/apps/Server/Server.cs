@@ -112,7 +112,7 @@ class TestCalls
 
 		}
 
-		public void testExpression()
+	public void testExpression()
 	{
 		var args = new Type[1];
 		args[0]=typeof( TestMsg );
@@ -145,7 +145,7 @@ class TestCalls
 		lib.Log.info($"testExpression: {endMs}");
 	}
 
-		public void handle( TestMsg msg )
+	public void handle( TestMsg msg )
 	{
 	}
 
