@@ -24,9 +24,12 @@ public interface IMachine: IService
 [Serializable]
 public class MachineCfg : lib.Config
 {
+	public string	connectToAddress	= "0.0.0.0";
+	public ushort	connectToPort			= 0;
+
 }
 
-public class Machine : ServiceWithConfig<MachineCfg>, IMachine
+	public class Machine : ServiceWithConfig<MachineCfg>, IMachine
 {
 	public Machine( lib.Token _id, res.Ref<MachineCfg> _cfg )
 		: base( _id, _cfg )
@@ -91,6 +94,11 @@ public class Machine : ServiceWithConfig<MachineCfg>, IMachine
 		{
 			lib.Log.warn( $"Could not find service of type {start.type}" );
 		}
+
+
+
+
+
 	}
 
 	private bool m_running = true;

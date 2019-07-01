@@ -21,6 +21,9 @@ namespace sv
 {
 
 
+#region Test
+
+
 class TestMsg
 {
 }
@@ -152,10 +155,11 @@ class TestCalls
 
 }
 
+#endregion
 
 
 
-static class Program
+	static class Program
 {
 	struct POINTAPI
 	{

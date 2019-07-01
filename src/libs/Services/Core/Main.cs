@@ -217,7 +217,7 @@ public class Main
 			Socket socket = m_listener.AcceptSocket();
 
 
-			net.Conn conn = new net.Conn( socket, new lib.XmlFormatter2() );
+			net.Conn conn = new net.Conn( socket );
 
 			m_cnx.Add( conn );
 

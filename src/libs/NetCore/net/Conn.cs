@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-//using System.Threading.Tasks;
 using System.Threading;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Net.Sockets;
 using System.IO;
 
@@ -18,16 +12,14 @@ public interface I_Savable
 }
 
 
-
-
-
 public class Conn : lib.Conn
 {
 	private bool m_loop = true;
 
 
-	public Conn( Socket sock, IFormatter formatter )
-	: base( sock, formatter )
+	public Conn( Socket sock, lib.IProcess proc = null )
+		: 
+		base( sock, proc )
 	{
 	}
 

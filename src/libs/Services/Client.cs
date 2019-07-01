@@ -7,6 +7,9 @@ using lib;
 
 namespace svc
 {
+
+
+
 public interface ISvcClient: IService
 {
 
