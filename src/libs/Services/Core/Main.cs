@@ -12,6 +12,9 @@ using System.Net.NetworkInformation;
 using System.Reflection;
 
 using System.IO;
+using Konsole;
+using System.Diagnostics;
+using System.Linq.Expressions;
 
 namespace sv
 {
@@ -19,10 +22,148 @@ namespace sv
 
 
 
+	#region Test
+
+
+	class TestMsg
+	{
+	}
+
+	class TestCalls
+	{
+
+		private int m_runCount = 10000000;
+
+		public void runAllTests()
+		{
+			testDirect();
+			testInvoke();
+			testDelegate();
+			testExpression();
+
+
+		}
+
+
+		public void testDirect()
+		{
+			var o = new TestMsg();
+
+			var timer = new lib.Timer();
+
+			timer.Start();
+			for( int i = 0; i < m_runCount; ++i )
+			{
+				handle( o );
+			}
+			var endMs = timer.Current;
+
+			lib.Log.info( $"testDirect: {endMs}" );
+		}
+
+		public void testInvoke()
+		{
+			var argTypes = new Type[ 1 ];
+			argTypes[0] = typeof( TestMsg );
+
+			var mi = GetType().GetMethod( "handle", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, argTypes, null );
+
+			var o = new TestMsg();
+
+			var timer = new lib.Timer();
+
+			var args = new object[1];
+			args[0] = o;
+
+			timer.Start();
+			for( int i = 0; i < m_runCount; ++i )
+			{
+				mi.Invoke( this, args );
+			}
+			var endMs = timer.Current;
+
+			lib.Log.info( $"testInvoke: {endMs}" );
+		}
+
+		public delegate void dlgHandler( TestMsg msg );
+
+		public void testDelegate()
+		{
+			/*
+			var args = new Type[1];
+			args[0]=typeof( TestMsg );
+
+			var mi = GetType().GetMethod( "handle", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, args, null );
+
+			var cb = mi.CreateDelegate( typeof(dlgHandler) );
+
+			var o = new TestMsg();
+
+			var timer = new lib.Timer();
+
+			timer.Start();
+			for( int i = 0; i< m_runCount; ++i )
+			{
+				cb.DynamicInvoke( o );
+			}
+			var endMs = timer.CurrentMS;
+
+			lib.Log.info( "testDelegate: {0}", endMs );
+			/*/
+			lib.Log.info( $"testDelegate: OFF" );
+			//*/
+
+
+		}
+
+		public void testExpression()
+		{
+			var args = new Type[1];
+			args[0] = typeof( TestMsg );
+
+			var mi = GetType().GetMethod( "handle", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, args, null );
+
+			ParameterExpression pe = Expression.Parameter( typeof (TestMsg ), "msgIn" );
+
+			var exConvert = Expression.Convert( pe, args[ 0 ] );
+
+			var exParams = new Expression[ 1 ];
+			exParams[0] = exConvert;
+
+			var exThis = Expression.Constant( this );
+			var exCall = Expression.Call( exThis, mi, exParams );
+
+			var fn = Expression.Lambda<Action<TestMsg>>( exCall, pe ).Compile();
+
+			var o = new TestMsg();
+
+			var timer = new lib.Timer();
+
+			timer.Start();
+			for( int i = 0; i < m_runCount; ++i )
+			{
+				fn( o );
+			}
+			var endMs = timer.Current;
+
+			lib.Log.info( $"testExpression: {endMs}" );
+		}
+
+		public void handle( TestMsg msg )
+		{
+		}
+
+
+	}
+
+	#endregion
 
 
 
-public enum ENodeType
+
+
+
+	public enum ENodeType
 {
 	Root,
 	Leaf
@@ -69,42 +210,86 @@ public class ServerCfg : lib.Config
 }
 
 
-public class Main
+
+
+	public class Main
 {
 	static public Main main;
 
-	public lib.Clock clock { get; private set; }
+
+
+
+		static Window s_logWin;
+
+		static public void log( lib.LogEvent evt )
+		{
+			switch( evt.LogType )
+			{
+				case lib.LogType.Error:
+				s_logWin.ForegroundColor = ConsoleColor.Red;
+				break;
+				case lib.LogType.Warn:
+				s_logWin.ForegroundColor = ConsoleColor.Yellow;
+				break;
+				case lib.LogType.Info:
+				s_logWin.ForegroundColor = ConsoleColor.Gray;
+				break;
+
+			}
+
+			s_logWin.WriteLine( $"{evt.Msg}" );
+		}
+
+
+
+
+
+
+
+
+
+
+
+		public lib.Clock clock { get; private set; }
 
 	public Main( string configPath )
 	{
 		main = this;
 
-		/*
-		{
-			var serTest = new SerializationTest();
-
-			var filestream = new FileStream( "serTest.xml", FileMode.Create );
-
-			var formatter = new lib.XmlFormatter2();
-
-			formatter.Serialize( filestream, serTest );
-
-			filestream.Close();
-
-			filestream = new FileStream( "serTest.xml", FileMode.Open );
-
-			formatter = new lib.XmlFormatter2();
-
-			var serTestLoad = formatter.Deserialize( filestream ) as SerializationTest;
-
-			filestream.Close();
-
-		}
-		//*/
+		s_logWin = new Window();
+		s_logWin.BackgroundColor = ConsoleColor.DarkGray;
+		s_logWin.Clear( ConsoleColor.DarkGray );
 
 
+		Process p = Process.GetCurrentProcess();
 
-		lib.Util.checkAndAddDirectory( "logs" );
+		string logpath = "logs/"+Environment.MachineName+"_"+p.Id+".log";
+
+		lib.Log.create( logpath );
+
+		lib.Log.s_log.addDelegate( log );
+
+		lib.Log.info( $"Command line {Environment.CommandLine}" );
+		lib.Log.info( $"Current working directory {Environment.CurrentDirectory}" );
+		lib.Log.info( $"Running as {( Environment.Is64BitProcess ? "64" : "32" )}bit on a {( Environment.Is64BitOperatingSystem ? "64" : "32" )}bit machine." );
+		lib.Log.info( $"Running on {Environment.OSVersion}" );
+		lib.Log.info( $"This machine has {Environment.ProcessorCount} processors." );
+		lib.Log.info( $"Running as {Environment.UserName}" );
+
+		lib.Log.info( $"Running on CLR {Environment.Version}" );
+		lib.Log.info( $"Currently given {Environment.WorkingSet} memory" );
+
+
+
+		var test = new TestCalls();
+		test.runAllTests();
+
+		res.Mgr.startup();
+		lib.Config.startup( "server_config.cfg" );
+
+
+
+			lib.Util.checkAndAddDirectory( "logs" );
 		// save/static and save/dynamic are created when they dont exist in order to create the universe
 		lib.Util.checkAndAddDirectory( "save/players" );
 

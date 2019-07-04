@@ -85,6 +85,8 @@ public class Machine : ServiceWithConfig<MachineCfg>, IMachine
 					parms[0] = new lib.Token( start.name );
 					parms[1] = cfg;
 
+					lib.Log.info( $"Starting service {start.name} of type {refType.Name} using config {start.configPath}" );
+
 					svc.Service s = (svc.Service)cons.Invoke( parms );
 
 					svc.Service.s_mgr.start( s );
@@ -103,8 +105,6 @@ public class Machine : ServiceWithConfig<MachineCfg>, IMachine
 		{
 			lib.Log.warn( $"Could not find service of type {start.type}" );
 		}
-
-		var res = cfg.res;
 
 		if( cfg.res.connectToPort != 0 )
 		{
