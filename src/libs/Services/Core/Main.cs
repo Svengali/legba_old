@@ -79,6 +79,7 @@ public class Main
 	{
 		main = this;
 
+		/*
 		{
 			var serTest = new SerializationTest();
 
@@ -99,19 +100,18 @@ public class Main
 			filestream.Close();
 
 		}
+		//*/
 
 
 
-
-
-		checkAndAddDirectory( "logs" );
+		lib.Util.checkAndAddDirectory( "logs" );
 		// save/static and save/dynamic are created when they dont exist in order to create the universe
-		checkAndAddDirectory( "save/players" );
+		lib.Util.checkAndAddDirectory( "save/players" );
 
 
-		checkAndAddDirectory( "save/archive/static" );
-		checkAndAddDirectory( "save/archive/dynamic" );
-		checkAndAddDirectory( "save/archive/players" );
+		lib.Util.checkAndAddDirectory( "save/archive/static" );
+		lib.Util.checkAndAddDirectory( "save/archive/dynamic" );
+		lib.Util.checkAndAddDirectory( "save/archive/players" );
 
 		clock = new lib.Clock( 0 );
 
@@ -213,7 +213,7 @@ public class Main
 
 		svc.Service.s_mgr.procMsg_block( 1000 );
 
-		//checkAndAddDirectory( "" );
+		//lib.Util.checkAndAddDirectory( "" );
 
 		if( m_listener.Pending() )
 		{
@@ -228,16 +228,6 @@ public class Main
 
 			conn.recieveThread();
 		}
-	}
-
-	private void checkAndAddDirectory( string path )
-	{
-		if( !Directory.Exists( path ) )
-		{
-			lib.Log.info( "Creating directory {0}", path );
-			Directory.CreateDirectory( path );
-		}
-
 	}
 
 

@@ -1,6 +1,10 @@
 ## Project Specific settings
 run/server/logs/
 run/server/save/
+run/server/templates/
+run/client/logs/
+run/client/save/
+run/client/templates/
 *.pem
 
 

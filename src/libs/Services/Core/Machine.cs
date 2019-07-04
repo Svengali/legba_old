@@ -104,6 +104,8 @@ public class Machine : ServiceWithConfig<MachineCfg>, IMachine
 			lib.Log.warn( $"Could not find service of type {start.type}" );
 		}
 
+		var res = cfg.res;
+
 		if( cfg.res.connectToPort != 0 )
 		{
 			lib.Log.info( $"Connecting to {cfg.res.connectToAddress}:{cfg.res.connectToPort}" );

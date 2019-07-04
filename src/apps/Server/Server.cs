@@ -222,7 +222,21 @@ class TestCalls
 
 	static public void log( lib.LogEvent evt )
 	{
-		s_logWin.WriteLine( $"{evt.Msg}" );
+		switch( evt.LogType )
+		{
+			case lib.LogType.Error: 
+				s_logWin.ForegroundColor = ConsoleColor.Red;
+				break;
+				case lib.LogType.Warn:
+				s_logWin.ForegroundColor = ConsoleColor.Yellow;
+				break;
+				case lib.LogType.Info:
+				s_logWin.ForegroundColor = ConsoleColor.Gray;
+				break;
+
+			}
+
+			s_logWin.WriteLine( $"{evt.Msg}" );
 	}
 
 
@@ -231,7 +245,7 @@ class TestCalls
 		/// </summary>
 
 		///	[STAThread]
-		static void Main( string[] args  )
+	static void Main( string[] args  )
 	{
 		///Application.EnableVisualStyles();
 		///Application.SetCompatibleTextRenderingDefault( false );
@@ -242,6 +256,8 @@ class TestCalls
 
 
 		s_logWin = new Window(); 
+		s_logWin.BackgroundColor = ConsoleColor.DarkGray;
+		s_logWin.Clear( ConsoleColor.DarkGray );
 
 
 		Process p = Process.GetCurrentProcess();
@@ -274,7 +290,7 @@ class TestCalls
 		test.runAllTests();
 
 		res.Mgr.startup();
-		lib.Config.startup();
+		lib.Config.startup( "server_config.cfg" );
 
 		sv.Main server = new sv.Main( args[0] );
 

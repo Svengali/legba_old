@@ -259,7 +259,7 @@ static class Program
 		test.runAllTests();
 
 		res.Mgr.startup();
-		lib.Config.startup();
+		lib.Config.startup( "server_config.cfg" );
 
 		sv.Main server = new sv.Main( args[0] );
 
