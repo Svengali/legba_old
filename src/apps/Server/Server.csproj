@@ -83,29 +83,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="config\coms\Test.config" />
-    <None Include="config\ents\Asteroid_a.cfg" />
-    <None Include="config\ents\Asteroid_b.cfg" />
-    <None Include="config\ents\Asteroid_c.cfg" />
-    <None Include="config\ents\Asteroid_d.cfg" />
-    <None Include="config\ents\Asteroid_e.cfg" />
-    <None Include="config\ents\Bullet.cfg" />
-    <None Include="config\ents\Nebula_a.cfg" />
-    <None Include="config\ents\Nebula_b.cfg" />
-    <None Include="config\ents\Nebula_c.cfg" />
-    <None Include="config\ents\Planet.cfg" />
-    <None Include="config\ents\Player.cfg" />
-    <None Include="config\machines\Leaf.cfg" />
-    <None Include="config\machines\Root.cfg" />
-    <None Include="config\machines\Root_live.cfg" />
-    <None Include="config\machines\Root_marc.cfg" />
-    <None Include="config\services\AI.cfg" />
-    <None Include="config\services\Game.cfg" />
-    <None Include="config\services\Machine.cfg" />
-    <None Include="config\services\Physics.cfg" />
-    <None Include="config\services\Proxy_live.cfg" />
-    <None Include="config\services\Proxy_marc.cfg" />
-    <None Include="config\services\Universe.cfg" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\libs\konsole\Konsole\Konsole.csproj">
