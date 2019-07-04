@@ -14,8 +14,7 @@ using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using System.Reflection;
-
-
+using Konsole;
 
 namespace sv
 {
@@ -218,12 +217,21 @@ class TestCalls
 		s_running = false;
 	}
 
-	/// <summary>
-	/// The main entry point for the application.
-	/// </summary>
-	
-	///	[STAThread]
-	static void Main( string[] args  )
+
+	static Window s_logWin;
+
+	static public void log( lib.LogEvent evt )
+	{
+		s_logWin.WriteLine( $"{evt.Msg}" );
+	}
+
+
+		/// <summary>
+		/// The main entry point for the application.
+		/// </summary>
+
+		///	[STAThread]
+		static void Main( string[] args  )
 	{
 		///Application.EnableVisualStyles();
 		///Application.SetCompatibleTextRenderingDefault( false );
@@ -233,6 +241,7 @@ class TestCalls
 		///Console c = new Console();
 
 
+		s_logWin = new Window(); 
 
 
 		Process p = Process.GetCurrentProcess();
@@ -246,6 +255,8 @@ class TestCalls
 		s_rtb = c.RTB;
 		c.Show();
 		*/
+
+		lib.Log.s_log.addDelegate( log );
 
 		lib.Log.info( $"Command line {Environment.CommandLine}" );
 		lib.Log.info( $"Current working directory {Environment.CurrentDirectory}" );
