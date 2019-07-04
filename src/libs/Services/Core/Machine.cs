@@ -73,7 +73,6 @@ public class Machine : ServiceWithConfig<MachineCfg>, IMachine
 
 			var cfg = Activator.CreateInstance( refType, start.configPath );
 
-
 			if( cfg != null )
 			{
 				types[ 1 ] = cfg.GetType();
