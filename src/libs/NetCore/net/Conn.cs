@@ -27,6 +27,8 @@ public class Conn : lib.Conn
 	{
 		Thread thread = new Thread( new ThreadStart( this.recieveLoop ) );
 
+		thread.Name = $"Conn {Sock.RemoteEndPoint}";
+
 		thread.Start();
 	}
 
@@ -34,6 +36,14 @@ public class Conn : lib.Conn
 
 	private void recieveLoop()
 	{
+		var curThread = Thread.CurrentThread;
+
+		lib.Log.logProps( curThread, $"Starting thread { curThread.Name} ({ curThread.ManagedThreadId})", lib.LogType.Info );
+
+		lib.Log.logProps( Sock, $"Socket {Sock.RemoteEndPoint}", lib.LogType.Info );
+
+
+
 		while( m_loop )
 		{
 			try
@@ -90,13 +100,17 @@ public class Conn : lib.Conn
 				lib.Log.error($"Socket {Sock.RemoteEndPoint} had a problem.  Ex {e}.");
 				m_loop = false;
 			}
+
+			if( !Sock.Connected ) m_loop = false;
 		}
+
+		lib.Log.info( $"Ending thread { curThread.Name} ({ curThread.ManagedThreadId})" );
 	}
 
 
-	private EventWaitHandle mm_recvWait = new EventWaitHandle( true, EventResetMode.AutoReset );
-	private IAsyncResult mm_recvRes;
-	private void recieveLoop_old()
+	EventWaitHandle mm_recvWait = new EventWaitHandle( true, EventResetMode.AutoReset );
+	IAsyncResult mm_recvRes;
+	void recieveLoop_old()
 	{
 		while( m_loop )
 		{
@@ -105,7 +119,7 @@ public class Conn : lib.Conn
 		}
 	}
 
-	private void asyncRecv( IAsyncResult ar )
+	void asyncRecv( IAsyncResult ar )
 	{
 		int packetSize = Stream.EndRead( ar );
 		lib.Log.info($"Recieved {packetSize}" );

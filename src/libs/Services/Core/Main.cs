@@ -307,7 +307,7 @@ public class ServerCfg : lib.Config
 		//m_cfg = lib.Config.load<ServerCfg>( configPath );
 		m_cfg = res.Mgr.lookup<ServerCfg>( configPath );
 
-		lib.Log.info( $"Starting {m_cfg.res.port}" );
+		lib.Log.info( $"Listening on port {m_cfg.res.port}" );
 		IPEndPoint localEP = new IPEndPoint( IPAddress.Parse( m_cfg.res.address ), m_cfg.res.port ); 
 
 		m_listener = new TcpListener( localEP );

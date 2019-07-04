@@ -110,7 +110,7 @@ public class Machine : ServiceWithConfig<MachineCfg>, IMachine
 			lib.Log.info( $"Connecting to {cfg.res.connectToAddress}:{cfg.res.connectToPort}" );
 
 			m_client = new TcpClient( cfg.res.connectToAddress, cfg.res.connectToPort );
-			m_client.Connect( cfg.res.connectToAddress, cfg.res.connectToPort );
+			//m_client.Connect( cfg.res.connectToAddress, cfg.res.connectToPort );
 
 			m_client.LingerState = new LingerOption( false, 0 );
 			m_client.NoDelay = true;
