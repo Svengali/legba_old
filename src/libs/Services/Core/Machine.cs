@@ -9,6 +9,7 @@ using System.Reflection;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Linq.Expressions;
+using System.Net.Sockets;
 
 namespace svc
 {
@@ -29,10 +30,11 @@ public class MachineCfg : lib.Config
 
 }
 
-	public class Machine : ServiceWithConfig<MachineCfg>, IMachine
+public class Machine : ServiceWithConfig<MachineCfg>, IMachine
 {
 	public Machine( lib.Token _id, res.Ref<MachineCfg> _cfg )
-		: base( _id, _cfg )
+		: 
+		base( _id, _cfg )
 	{
 	}
 
@@ -63,7 +65,14 @@ public class MachineCfg : lib.Config
 		{
 			Type cfgType = svcType.BaseType.GenericTypeArguments[0];
 
-			res.Ref cfg = res.Mgr.load( start.configPath, cfgType );
+			//res.Ref cfg = res.Mgr.lookup( start.configPath, cfgType );
+
+			var refGenType = typeof(res.Ref<>);
+
+			var refType = refGenType.MakeGenericType( cfgType );
+
+			var cfg = Activator.CreateInstance( refType, start.configPath );
+
 
 			if( cfg != null )
 			{
@@ -95,14 +104,32 @@ public class MachineCfg : lib.Config
 			lib.Log.warn( $"Could not find service of type {start.type}" );
 		}
 
+		if( cfg.res.connectToPort != 0 )
+		{
+			lib.Log.info( $"Connecting to {cfg.res.connectToAddress}:{cfg.res.connectToPort}" );
 
+			m_client = new TcpClient( cfg.res.connectToAddress, cfg.res.connectToPort );
+			m_client.Connect( cfg.res.connectToAddress, cfg.res.connectToPort );
 
+			m_client.LingerState = new LingerOption( false, 0 );
+			m_client.NoDelay = true;
+
+			lib.Log.expected( m_client.Connected, " Connected." );
+
+			lib.Log.info( $"Connected: {m_client.Connected}" );
+
+		}
 
 
 	}
 
-	private bool m_running = true;
-}
+	bool m_running = true;
+
+	TcpClient m_client;
+
+
+
+	}
 
 
 }

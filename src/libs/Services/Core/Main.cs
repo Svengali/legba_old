@@ -62,7 +62,7 @@ public class ServerCfg : lib.Config
 	public string address = "0.0.0.0";
 	public int		port = 8008;
 
-	public string machineCfg;
+	public res.Ref<svc.MachineCfg> machineCfg;
 
 	public NewService[] services = { new NewService() };
 	public string[] demand = { };
@@ -120,7 +120,7 @@ public class Main
 		//Load configs
 		lib.Log.info( "Loading config {0}", configPath );
 		//m_cfg = lib.Config.load<ServerCfg>( configPath );
-		m_cfg = res.Mgr.load<ServerCfg>( configPath );
+		m_cfg = res.Mgr.lookup<ServerCfg>( configPath );
 
 		lib.Log.info( $"Starting {m_cfg.res.port}" );
 		IPEndPoint localEP = new IPEndPoint( IPAddress.Parse( m_cfg.res.address ), m_cfg.res.port ); 
@@ -146,8 +146,11 @@ public class Main
 		string machineName = m_cfg.res.name+"/"+ep.Address.ToString() + ":" + ep.Port;
 
 		//First of all start the machine service
-		var machineCfg = res.Mgr.load<svc.MachineCfg>( m_cfg.res.machineCfg );
-		m_machine = new svc.Machine( new lib.Token( machineName ), machineCfg );
+
+		//This is now done 
+		//var machineCfg = res.Mgr.load<svc.MachineCfg>( m_cfg.res.machineCfg );
+
+		m_machine = new svc.Machine( new lib.Token( machineName ), m_cfg.res.machineCfg );
 		svc.Service.s_mgr.start( m_machine );
 
 		//TODO: Move these into machine startup.
@@ -164,6 +167,8 @@ public class Main
 
 			m_machine.send( start );
 		}
+
+
 	}
 
 	public void shutdown()
@@ -245,6 +250,7 @@ public class Main
 	svc.Mgr m_svcMgr;
 
 	svc.Machine m_machine;
+
 
 }
 

@@ -85,6 +85,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\libs\konsole\Konsole\Konsole.csproj">
+      <Project>{90808a57-0462-4d92-94f8-da95b7931895}</Project>
+      <Name>Konsole</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\libs\Services\Services.csproj">
       <Project>{768dc46c-c48e-4320-9760-e2dd47bfaa51}</Project>
       <Name>Services</Name>
