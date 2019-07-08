@@ -319,10 +319,10 @@ public partial class Handler
 						unhandled( c.m );
 					}
 
-					//time.Stop();
-					//lib.Log.info( "{0} to handleAsk", time.DurationMS );
+						//time.Stop();
+						//lib.Log.info( $"{time.DurationMS} to handleAsk" );
+					}
 				}
-			}
 		}
 
 		if(m_q.IsEmpty)

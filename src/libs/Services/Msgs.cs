@@ -119,7 +119,7 @@ public class Server : msg.Msg
 
 	public void setCaller_fromService( string callerFilePath = "", string callerMemberName = "", int callerLineNumber = 0 )
 	{
-		caller = String.Format( "{0}: {1}: in {2}", callerFilePath, callerLineNumber, callerMemberName );
+		caller = String.Format( $"{callerFilePath}: {callerLineNumber}: in {callerMemberName}" );
 	}
 
 	private void setCaller()
@@ -168,15 +168,27 @@ public class StartService : Server
 
 }
 
-/*
-[Serializable]
-class ServicesAvailable : Server
-{
-	public string[] services;
-}
-*/
 
-[Serializable]
+	[Serializable]
+	public class Hello : Server
+	{
+		public string msg;
+
+		public Hello( Filter _filter ) : base( _filter ) { }
+
+	}
+
+
+
+	/*
+	[Serializable]
+	class ServicesAvailable : Server
+	{
+		public string[] services;
+	}
+	*/
+
+	[Serializable]
 public class ServiceReady : Server
 {
 	public svc.Ref<svc.Service> sref;

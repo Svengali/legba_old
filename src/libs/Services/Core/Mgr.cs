@@ -69,7 +69,7 @@ public class Mgr
 			*/
 
 			//time.Stop();
-			//lib.Log.info( "{0} to task ask_fromService", time.DurationMS );
+			//lib.Log.info( $"{time.DurationMS} to task ask_fromService" );
 
 			return list.ToArray();
 		});
@@ -153,7 +153,7 @@ public class Mgr
 
 			if(svc != null)
 			{
-				lib.Log.info("Starting service {0}", svc.ToString());
+				lib.Log.info( $"Starting service {svc}" );
 
 				ImmutableInterlocked.AddOrUpdate( ref m_services, svc.id, svc, (k, v) => svc );
 

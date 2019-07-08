@@ -67,6 +67,16 @@ public class Conn : lib.Conn
 					memStream.Write( mm_recvBuf, 0, (int)amountRead );
 
 					totalAmountRead += amountRead;
+
+					//*
+					var debugMemStream = new MemoryStream( 1024 );
+					debugMemStream.Write( mm_recvBuf, 0, (int)amountRead );
+					debugMemStream.Position = 0;
+
+						StreamReader debugReader = new StreamReader( debugMemStream );
+						string debugText = debugReader.ReadToEnd();
+						//*/
+
 				}
 
 				try
@@ -101,7 +111,11 @@ public class Conn : lib.Conn
 				m_loop = false;
 			}
 
-			if( !Sock.Connected ) m_loop = false;
+			if( !Sock.Connected )
+			{
+				lib.Log.info( $"Socket is no longer connected, leaving" );
+				m_loop = false;
+			}
 		}
 
 		lib.Log.info( $"Ending thread { curThread.Name} ({ curThread.ManagedThreadId})" );

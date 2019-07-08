@@ -398,7 +398,7 @@ namespace gen
 
 				assignments = assignments.Add( statement );
 
-				constructorParams += ModifyToken( "{0}New", f.Key.Identifier );
+				constructorParams += ModifyToken( $"{0}New", f.Key.Identifier );
 
 			}
 

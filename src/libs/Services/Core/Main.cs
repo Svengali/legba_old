@@ -108,7 +108,7 @@ namespace sv
 			}
 			var endMs = timer.CurrentMS;
 
-			lib.Log.info( "testDelegate: {0}", endMs );
+			lib.Log.info( $"testDelegate: {endMs}" );
 			/*/
 			lib.Log.info( $"testDelegate: OFF" );
 			//*/
@@ -212,14 +212,15 @@ public class ServerCfg : lib.Config
 
 
 
-	public class Main
+public class Main
 {
 	static public Main main;
 
 
 
 
-		static Window s_logWin;
+		static Window s_fullscreenWin;
+		static IConsole s_logWin;
 
 		static public void log( lib.LogEvent evt )
 		{
@@ -256,12 +257,19 @@ public class ServerCfg : lib.Config
 	{
 		main = this;
 
-		s_logWin = new Window();
-		s_logWin.BackgroundColor = ConsoleColor.DarkGray;
-		s_logWin.Clear( ConsoleColor.DarkGray );
+			s_fullscreenWin = new Window();
+			s_fullscreenWin.BackgroundColor = ConsoleColor.DarkGray;
+			s_fullscreenWin.Clear( ConsoleColor.DarkGray );
 
+			var xStart = 2;
+			var yStart = 2;
 
-		Process p = Process.GetCurrentProcess();
+			var xSize = s_fullscreenWin.WindowWidth  - xStart * 2;
+			var ySize = s_fullscreenWin.WindowHeight - yStart * 2;
+
+			s_logWin = Window.Open( xStart, yStart, xSize, ySize, "Logging" );
+
+			Process p = Process.GetCurrentProcess();
 
 		string logpath = "logs/"+Environment.MachineName+"_"+p.Id+".log";
 
@@ -281,8 +289,12 @@ public class ServerCfg : lib.Config
 
 
 
+		/*
 		var test = new TestCalls();
 		test.runAllTests();
+		/*/
+		lib.Log.info( $"Skipping tests." );
+		//*/
 
 		res.Mgr.startup();
 		lib.Config.startup( "server_config.cfg" );
@@ -303,7 +315,7 @@ public class ServerCfg : lib.Config
 		m_svcMgr = new svc.Mgr();
 
 		//Load configs
-		lib.Log.info( "Loading config {0}", configPath );
+		lib.Log.info( $"Loading config {configPath}" );
 		//m_cfg = lib.Config.load<ServerCfg>( configPath );
 		m_cfg = res.Mgr.lookup<ServerCfg>( configPath );
 

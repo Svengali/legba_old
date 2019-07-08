@@ -10,6 +10,7 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Linq.Expressions;
 using System.Net.Sockets;
+using System.Net;
 
 namespace svc
 {
@@ -30,8 +31,8 @@ public class MachineCfg : lib.Config
 
 }
 
-public class Machine : ServiceWithConfig<MachineCfg>, IMachine
-{
+public class Machine : ServiceWithConfig<MachineCfg>, IMachine, lib.IProcess
+	{
 	public Machine( lib.Token _id, res.Ref<MachineCfg> _cfg )
 		: 
 		base( _id, _cfg )
@@ -47,12 +48,17 @@ public class Machine : ServiceWithConfig<MachineCfg>, IMachine
 		}
 	}
 
-	void handle( svmsg.Shutdown stop )
-	{
-		m_running = false;
-	}
+		void handle( svmsg.Shutdown stop )
+		{
+			m_running = false;
+		}
 
-	public void handle( svmsg.StartService start )
+		void handle( svmsg.Hello hello )
+		{
+			lib.Log.info( $"Got hello" );
+		}
+
+		public void handle( svmsg.StartService start )
 	{
 		Type[] types = new Type[ 2 ];
 		object[] parms = new object[ 2 ];
@@ -109,24 +115,40 @@ public class Machine : ServiceWithConfig<MachineCfg>, IMachine
 		{
 			lib.Log.info( $"Connecting to {cfg.res.connectToAddress}:{cfg.res.connectToPort}" );
 
-			m_client = new TcpClient( cfg.res.connectToAddress, cfg.res.connectToPort );
-			//m_client.Connect( cfg.res.connectToAddress, cfg.res.connectToPort );
+			m_sock = new Socket( SocketType.Stream, ProtocolType.Tcp );
 
-			m_client.LingerState = new LingerOption( false, 0 );
-			m_client.NoDelay = true;
+			var didParse = IPAddress.TryParse( cfg.res.connectToAddress, out var ipAddress );
 
-			lib.Log.expected( m_client.Connected, " Connected." );
+			m_sock.Connect( ipAddress, cfg.res.connectToPort );
 
-			lib.Log.info( $"Connected: {m_client.Connected}" );
+			m_conn = new net.Conn( m_sock );
+
+			m_sock.LingerState = new LingerOption( false, 0 );
+			m_sock.NoDelay = true;
+
+			var msg = new svmsg.Hello( new svmsg.FilterType<Machine>() );
+
+			m_conn.send( msg );
 
 		}
 
 
 	}
 
+	public void process( object obj )
+	{
+		var msg = obj as svmsg.Server;
+
+		send( msg );
+
+	}
+
 	bool m_running = true;
 
-	TcpClient m_client;
+	Socket m_sock;
+	net.Conn m_conn;
+
+	//TcpClient m_client;
 
 
 
