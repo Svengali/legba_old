@@ -15,7 +15,7 @@ namespace EntityTest
 
 
 
-
+			/*
 			var e = ent.Entity.create();
 
 			//var nc = new NetCore.Class1();
@@ -33,6 +33,10 @@ namespace EntityTest
 			var v = e.TestVal;
 
 			//var healthOpt = e.Com<ent.IComHealth>();
+
+
+			*/
+
 
 			/*
 			if( healthOpt.HasValue )

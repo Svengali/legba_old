@@ -13,6 +13,7 @@ namespace gen
 [Conditional("CodeGeneration")]
 public class NetViewAttribute : Attribute
 {
+	/*
 	public net.Views PrimaryView { get; private set; }
 	//public (net.Views from, net.Views to)[] Distribution { get; private set; }
 
@@ -29,8 +30,9 @@ public class NetViewAttribute : Attribute
 		{
 			Distribution[i] = (distribution[i * 2 + 0], distribution[i * 2 + 1]);
 		}
-		*/
+		* /
 	}
+	*/
 
 }
 
@@ -43,6 +45,7 @@ public class NetViewAttribute : Attribute
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Field, Inherited = true, AllowMultiple = true)]
 public class NetDistAttribute : Attribute
 {
+	/*
 	public net.Views Set { get; private set; }
 	public net.Views Get { get; private set; }
 
@@ -51,6 +54,7 @@ public class NetDistAttribute : Attribute
 		Set = set;
 		Get = get;
 	}
+	*/
 
 }
 
