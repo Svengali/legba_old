@@ -9,74 +9,74 @@ using System.Text;
 namespace msg
 {
 
-#region HandlerSpecs
-public interface HandleMgr
-{
-}
-#endregion
+	#region HandlerSpecs
+	public interface HandleMgr
+	{
+	}
+	#endregion
 
-[Serializable]
-public class Msg
-{
-}
+	[Serializable]
+	public class Msg
+	{
+	}
 
-#region Startup
+	#region Startup
 
-[Serializable]
-public class Login : Msg
-{
-	public String username;
-	//TODO SECURITY: salt and pepper
-	public String password;
-}
+	[Serializable]
+	public class Login : Msg
+	{
+		public String username;
+		//TODO SECURITY: salt and pepper
+		public String password;
+	}
 
-[Serializable]
-public class Create : Msg
-{
-	public String username;
-	//TODO SECURITY: salt and pepper
-	public String password;
-}
+	[Serializable]
+	public class Create : Msg
+	{
+		public String username;
+		//TODO SECURITY: salt and pepper
+		public String password;
+	}
 
-[Serializable]
-public class LoginRes : Msg
-{
-	public bool result;
-}
+	[Serializable]
+	public class LoginRes : Msg
+	{
+		public bool result;
+	}
 
-[Serializable]
-public class CreateRes : Msg
-{
-	public bool result;
-}
+	[Serializable]
+	public class CreateRes : Msg
+	{
+		public bool result;
+	}
 
-/*
-[Serializable]
-public class Begin : Entity
-{
-}
-*/
+	/*
+	[Serializable]
+	public class Begin : Entity
+	{
+	}
+	*/
 
-[Serializable]
-public class Loaded : Msg
-{
-}
+	[Serializable]
+	public class Loaded : Msg
+	{
+	}
 
-#endregion
+	#endregion
 
-#region Support
-[Serializable]
-public class RequestFile : Msg
-{
-	public string path;
-}
+	#region Support
+	[Serializable]
+	public class RequestFile : Msg
+	{
+		public string path;
+	}
 
-[Serializable]
-public class SendFile : Msg
-{
-	public string path;
-	public byte[] file;
-}
+	[Serializable]
+	public class SendFile : Msg
+	{
+		public string path;
+		public byte[] file;
+	}
 	#endregion
 
 

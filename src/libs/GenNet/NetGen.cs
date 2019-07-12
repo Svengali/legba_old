@@ -29,13 +29,13 @@ namespace gen
 
 		private TransformationContext m_context;
 
-		private Dictionary<VariableDeclaratorSyntax, TypeSyntax> m_fields = new Dictionary<VariableDeclaratorSyntax, TypeSyntax>();  
+		private Dictionary<VariableDeclaratorSyntax, TypeSyntax> m_fields = new Dictionary<VariableDeclaratorSyntax, TypeSyntax>();
 
 		private ClassDeclarationSyntax m_class;
 
-    private INamedTypeSymbol m_sym;
+		private INamedTypeSymbol m_sym;
 
-    private INamedTypeSymbol m_baseSym;
+		private INamedTypeSymbol m_baseSym;
 
 		private Dictionary<string, INamedTypeSymbol> m_dictClasses = new Dictionary<string, INamedTypeSymbol>();
 
@@ -44,10 +44,10 @@ namespace gen
 
 		public NetViewGen( AttributeData attributeData )
 		{
-			Requires.NotNull(attributeData, nameof(attributeData));
+			Requires.NotNull( attributeData, nameof( attributeData ) );
 
 			m_attributeData = attributeData;
-			m_data = attributeData.NamedArguments.ToImmutableDictionary(kv => kv.Key, kv => kv.Value);
+			m_data = attributeData.NamedArguments.ToImmutableDictionary( kv => kv.Key, kv => kv.Value );
 		}
 
 
@@ -70,7 +70,7 @@ namespace gen
 
 			var applyToClassIdentifier = m_class.Identifier;
 
-			if(m_class != null)
+			if( m_class != null )
 			{
 				var fieldsComment = "";
 
@@ -105,7 +105,7 @@ namespace gen
 
 				foreach( var kvp in m_dictClasses )
 				{
-					if( kvp.Key.Contains("View") )
+					if( kvp.Key.Contains( "View" ) )
 					{
 						var type = kvp.Value;
 
@@ -134,7 +134,7 @@ namespace gen
 				withMembers = withMembers.AddRange( CreateProtectedConstructors() );
 
 				withMembers = withMembers.AddRange( CreateWithFunctions() );
-				
+
 				withMembers = withMembers.AddRange( CreateCreateFunctions() );
 
 				var leadingTriviaComment = SF.Comment( $"/*\r\n{leadingTrivia}\r\n*/" );
@@ -151,12 +151,12 @@ namespace gen
 			}
 
 
-			if(copy != null)
+			if( copy != null )
 			{
 				results = results.Add( copy );
 			}
 
-			return Task.FromResult(results);
+			return Task.FromResult( results );
 		}
 
 		void GetClasses( ref Dictionary<string, INamedTypeSymbol> dictClasses, INamespaceOrTypeSymbol sym )
@@ -164,17 +164,24 @@ namespace gen
 			switch( sym.Kind )
 			{
 				//case SymbolKind.Alias:	return;
-				case SymbolKind.ArrayType:	return;
+				case SymbolKind.ArrayType:
+				return;
 				//case SymbolKind.Assembly:	return;
-				case SymbolKind.DynamicType:	return;
-				case SymbolKind.ErrorType:	return;
-				case SymbolKind.Event:	return;
-				case SymbolKind.Field:	return;
-				case SymbolKind.Label:	return;
+				case SymbolKind.DynamicType:
+				return;
+				case SymbolKind.ErrorType:
+				return;
+				case SymbolKind.Event:
+				return;
+				case SymbolKind.Field:
+				return;
+				case SymbolKind.Label:
+				return;
 				//case SymbolKind.Local:	return;
-				case SymbolKind.Method:	return;
+				case SymbolKind.Method:
+				return;
 				//case SymbolKind.NetModule:	return;
-				case SymbolKind.NamedType:	
+				case SymbolKind.NamedType:
 				{
 					var namedType = sym as INamedTypeSymbol;
 
@@ -184,7 +191,7 @@ namespace gen
 
 					if( namedType.IsType && !dictClasses.ContainsKey( name ) )
 					{
-						dictClasses.Add( name , namedType );
+						dictClasses.Add( name, namedType );
 					}
 
 					foreach( var subsym in namedType.GetTypeMembers() )
@@ -195,19 +202,25 @@ namespace gen
 				}
 				return;
 				//case SymbolKind.Namespace:	return;
-				case SymbolKind.Parameter:	return;
-				case SymbolKind.PointerType:	return;
-				case SymbolKind.Property:	return;
-				case SymbolKind.RangeVariable:	return;
+				case SymbolKind.Parameter:
+				return;
+				case SymbolKind.PointerType:
+				return;
+				case SymbolKind.Property:
+				return;
+				case SymbolKind.RangeVariable:
+				return;
 				//case SymbolKind.TypeParameter:	return;
-				case SymbolKind.Preprocessing:	return;
-				case SymbolKind.Discard:	return;
+				case SymbolKind.Preprocessing:
+				return;
+				case SymbolKind.Discard:
+				return;
 			}
 
-			
+
 			if( sym is IAssemblySymbol assem )
 			{
-				
+
 			}
 
 			if( sym is INamespaceSymbol nspace )
@@ -222,30 +235,46 @@ namespace gen
 		}
 
 
-		void AddMembers(ref string diag, INamespaceOrTypeSymbol  thingy, int depth)
+		void AddMembers( ref string diag, INamespaceOrTypeSymbol thingy, int depth )
 		{
 			switch( thingy.Kind )
 			{
-				case SymbolKind.Alias:	return;
-				case SymbolKind.ArrayType:	return;
+				case SymbolKind.Alias:
+				return;
+				case SymbolKind.ArrayType:
+				return;
 				//case SymbolKind.Assembly:	return;
-				case SymbolKind.DynamicType:	return;
-				case SymbolKind.ErrorType:	return;
-				case SymbolKind.Event:	return;
-				case SymbolKind.Field:	return;
-				case SymbolKind.Label:	return;
-				case SymbolKind.Local:	return;
-				case SymbolKind.Method:	return;
+				case SymbolKind.DynamicType:
+				return;
+				case SymbolKind.ErrorType:
+				return;
+				case SymbolKind.Event:
+				return;
+				case SymbolKind.Field:
+				return;
+				case SymbolKind.Label:
+				return;
+				case SymbolKind.Local:
+				return;
+				case SymbolKind.Method:
+				return;
 				//case SymbolKind.NetModule:	return;
 				//case SymbolKind.NamedType:	return;
 				//case SymbolKind.Namespace:	return;
-				case SymbolKind.Parameter:	return;
-				case SymbolKind.PointerType:	return;
-				case SymbolKind.Property:	return;
-				case SymbolKind.RangeVariable:	return;
-				case SymbolKind.TypeParameter:	return;
-				case SymbolKind.Preprocessing:	return;
-				case SymbolKind.Discard:	return;
+				case SymbolKind.Parameter:
+				return;
+				case SymbolKind.PointerType:
+				return;
+				case SymbolKind.Property:
+				return;
+				case SymbolKind.RangeVariable:
+				return;
+				case SymbolKind.TypeParameter:
+				return;
+				case SymbolKind.Preprocessing:
+				return;
+				case SymbolKind.Discard:
+				return;
 			}
 
 
@@ -258,26 +287,42 @@ namespace gen
 			{
 				switch( sym.Kind )
 				{
-					case SymbolKind.Alias:	continue;
-					case SymbolKind.ArrayType:	continue;
+					case SymbolKind.Alias:
+					continue;
+					case SymbolKind.ArrayType:
+					continue;
 					//case SymbolKind.Assembly:	continue;
-					case SymbolKind.DynamicType:	continue;
-					case SymbolKind.ErrorType:	continue;
-					case SymbolKind.Event:	continue;
-					case SymbolKind.Field:	continue;
-					case SymbolKind.Label:	continue;
-					case SymbolKind.Local:	continue;
-					case SymbolKind.Method:	continue;
+					case SymbolKind.DynamicType:
+					continue;
+					case SymbolKind.ErrorType:
+					continue;
+					case SymbolKind.Event:
+					continue;
+					case SymbolKind.Field:
+					continue;
+					case SymbolKind.Label:
+					continue;
+					case SymbolKind.Local:
+					continue;
+					case SymbolKind.Method:
+					continue;
 					//case SymbolKind.NetModule:	continue;
 					//case SymbolKind.NamedType:	continue;
 					//case SymbolKind.Namespace:	continue;
-					case SymbolKind.Parameter:	continue;
-					case SymbolKind.PointerType:	continue;
-					case SymbolKind.Property:	continue;
-					case SymbolKind.RangeVariable:	continue;
-					case SymbolKind.TypeParameter:	continue;
-					case SymbolKind.Preprocessing:	continue;
-					case SymbolKind.Discard:	continue;
+					case SymbolKind.Parameter:
+					continue;
+					case SymbolKind.PointerType:
+					continue;
+					case SymbolKind.Property:
+					continue;
+					case SymbolKind.RangeVariable:
+					continue;
+					case SymbolKind.TypeParameter:
+					continue;
+					case SymbolKind.Preprocessing:
+					continue;
+					case SymbolKind.Discard:
+					continue;
 				}
 
 				diag += $"{sym.Kind}/{sym.GetType().Name} | {sym.Name} | {sym.ToDisplayString()} | ";
@@ -287,7 +332,7 @@ namespace gen
 					diag += $"{assem.Name} | {assem.Identity.Name} | {String.Join( ", ", assem.Locations )}\r\n";
 				}
 
-			  var ranChildren = false;
+				var ranChildren = false;
 
 				if( sym is ITypeSymbol type )
 				{
@@ -389,10 +434,10 @@ namespace gen
 			var retType = SF.IdentifierName( returnType );
 
 			var withFn = SF.MethodDeclaration( retType, "with" );
-			
+
 
 			var paramList = CreateAssignCheckBlock();
-		
+
 
 			withFn = withFn.WithParameterList( SF.ParameterList( paramList ) );
 
@@ -405,7 +450,7 @@ namespace gen
 
 			var list = new SyntaxList<MemberDeclarationSyntax>();
 
-			list = list.Add(withFn);
+			list = list.Add( withFn );
 
 			return list;
 		}
@@ -418,10 +463,10 @@ namespace gen
 
 			var withFn = SF.MethodDeclaration( retType, "create" )
 			.WithModifiers( SyntaxTokenList.Create( SF.Token( SyntaxKind.PublicKeyword ) ).Add( SF.Token( SyntaxKind.StaticKeyword ) ) );
-			
+
 
 			var paramList = CreateAssignCheckBlock();
-		
+
 
 			withFn = withFn.WithParameterList( SF.ParameterList( paramList ) );
 
@@ -433,7 +478,7 @@ namespace gen
 
 			var list = new SyntaxList<MemberDeclarationSyntax>();
 
-			list = list.Add(withFn);
+			list = list.Add( withFn );
 
 			return list;
 		}
@@ -479,7 +524,7 @@ namespace gen
 				cons = cons.WithBody( block );
 
 
-				list = list.Add(cons);
+				list = list.Add( cons );
 			}
 
 			{
@@ -491,7 +536,7 @@ namespace gen
 
 				cons = cons.WithBody( block );
 
-				list = list.Add(cons);
+				list = list.Add( cons );
 			}
 
 

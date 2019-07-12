@@ -10,21 +10,21 @@ namespace net
 {
 
 
-public enum Id
-{
-}
-
-static public class Util
-{
-	public static lib.Id<Id> Generate()
-	{
-		return lib.Id<Id>.Generate();
-	}
-
-	static public void DoThings( NetId id )
+	public enum Id
 	{
 	}
-}
+
+	static public class Util
+	{
+		public static lib.Id<Id> Generate()
+		{
+			return lib.Id<Id>.Generate();
+		}
+
+		static public void DoThings( NetId id )
+		{
+		}
+	}
 
 
 

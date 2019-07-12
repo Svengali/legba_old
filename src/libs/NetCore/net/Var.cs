@@ -11,12 +11,12 @@ namespace net
 
 
 
-public struct Var<T>
-{
+	public struct Var<T>
+	{
 
 
 
-}
+	}
 
 
 
