@@ -314,7 +314,7 @@ namespace sv
 			m_cfg = res.Mgr.lookup<ServerCfg>( configPath );
 
 			lib.Log.info( $"Listening on port {m_cfg.res.port}" );
-			IPEndPoint localEP = new IPEndPoint( IPAddress.Parse( m_cfg.res.address ), m_cfg.res.port );
+			var localEP = new IPEndPoint( IPAddress.Parse( m_cfg.res.address ), m_cfg.res.port );
 
 			m_listener = new TcpListener( localEP );
 			m_listener.Start();
@@ -332,7 +332,7 @@ namespace sv
 			}
 			*/
 
-			IPEndPoint ep = (IPEndPoint)m_listener.LocalEndpoint;
+			var ep = (IPEndPoint)m_listener.LocalEndpoint;
 
 			string machineName = m_cfg.res.name+"/"+ep.Address.ToString() + ":" + ep.Port;
 

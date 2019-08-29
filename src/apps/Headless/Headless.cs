@@ -67,6 +67,29 @@ namespace cl
 			s_running = false;
 		}
 
+
+		public enum Game
+		{
+			Invalid,
+			Physical,
+			Health,
+
+			Custom = 100,
+		}
+
+
+		static void Test()
+		{
+			//var e = new ent.Entity<Game>();
+
+
+			var e2 = ent.Entity<Game>.create();
+
+
+
+
+		}
+
 		///	[STAThread]
 		static void Main( string[] args )
 		{

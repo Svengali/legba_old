@@ -20,8 +20,6 @@ namespace gen
 
 
 
-
-
 	public class NetViewGen : ICodeGenerator
 	{
 		private readonly AttributeData m_attributeData;
@@ -140,6 +138,7 @@ namespace gen
 				var leadingTriviaComment = SF.Comment( $"/*\r\n{leadingTrivia}\r\n*/" );
 
 				copy = SF.ClassDeclaration( applyToClassIdentifier )
+					.WithTypeParameterList( m_class.TypeParameterList )
 					.WithModifiers( SyntaxTokenList.Create( SF.Token( SyntaxKind.PartialKeyword ) ) )
 					.WithLeadingTrivia( leadingTriviaComment )
 					.WithMembers( withMembers );
@@ -374,25 +373,27 @@ namespace gen
 
 
 
-		SyntaxList<StatementSyntax> CreateAssignments( string varPrefix )
+		SyntaxList<StatementSyntax> CreateAssignments( string varPrefix, string version )
 		{
 			var assignments = new SyntaxList<StatementSyntax>();
 
-			var constructorParams = "";
+			var constructorParams = $"{version}";
 
 			var first = true;
 			foreach( var f in m_fields )
 			{
-				if( !first )
+				//if( !first )
 				{
 					constructorParams += ", ";
 				}
+				/*
 				else
 				{
 					first = false;
 				}
+				*/
 
-				var statement = SF.ParseStatement( $"var {f.Key.Identifier}New = {f.Key.Identifier}Opt.Or({varPrefix}{f.Key.Identifier});" );
+				var statement = SF.ParseStatement( $"var {f.Key.Identifier}New = {f.Key.Identifier}Opt.ValueOr({varPrefix}{f.Key.Identifier});" );
 
 				assignments = assignments.Add( statement );
 
@@ -400,7 +401,7 @@ namespace gen
 
 			}
 
-			var retExp = SF.ParseExpression( $"new {m_class.Identifier}( {constructorParams} )" );
+			var retExp = SF.ParseExpression( $"new {SU.ClassNameWithGenerics(m_class)}( {constructorParams} )" );
 
 			var ret = SF.ReturnStatement( retExp );
 
@@ -429,7 +430,7 @@ namespace gen
 
 		private SyntaxList<MemberDeclarationSyntax> CreateWithFunctions()
 		{
-			var returnType = m_class.Identifier;
+			var returnType = SU.ClassNameWithGenerics(m_class);
 
 			var retType = SF.IdentifierName( returnType );
 
@@ -443,7 +444,7 @@ namespace gen
 
 			var block = SF.Block();
 
-			block = block.WithStatements( CreateAssignments( "" ) );
+			block = block.WithStatements( CreateAssignments( "", "m_version + 1" ) );
 
 			withFn = withFn.WithBody( block )
 				.WithModifiers( SyntaxTokenList.Create( SF.Token( SyntaxKind.PublicKeyword ) ) );
@@ -457,7 +458,7 @@ namespace gen
 
 		private SyntaxList<MemberDeclarationSyntax> CreateCreateFunctions()
 		{
-			var returnType = m_class.Identifier;
+			var returnType = SU.ClassNameWithGenerics(m_class);
 
 			var retType = SF.IdentifierName( returnType );
 
@@ -472,7 +473,7 @@ namespace gen
 
 			var block = SF.Block();
 
-			block = block.WithStatements( CreateAssignments( "def." ) );
+			block = block.WithStatements( CreateAssignments( "def.", "0" ) );
 
 			withFn = withFn.WithBody( block );
 
@@ -490,13 +491,22 @@ namespace gen
 		{
 			var list = new SyntaxList<MemberDeclarationSyntax>();
 
-			if( m_fields.Count > 0 )
+			//We implicitly have version
+			//if( m_fields.Count > 0 )
 			{
 				BaseMethodDeclarationSyntax cons = SF.ConstructorDeclaration( m_class.Identifier );
 
 				cons = SU.AddKeyword( cons, SyntaxKind.ProtectedKeyword );
 
 				var paramList = new SeparatedSyntaxList<ParameterSyntax>();
+
+				{
+					var param = SF.Parameter( SF.Identifier( "version" ) )
+						.WithType( SF.IdentifierName( "ulong" ) );
+
+					paramList = paramList.Add( param );
+				}
+
 
 				foreach( var f in m_fields )
 				{
@@ -505,6 +515,8 @@ namespace gen
 
 					paramList = paramList.Add( param );
 				}
+
+
 
 				cons = cons.WithParameterList( SF.ParameterList( paramList ) );
 
@@ -527,6 +539,7 @@ namespace gen
 				list = list.Add( cons );
 			}
 
+
 			{
 				BaseMethodDeclarationSyntax cons = SF.ConstructorDeclaration( m_class.Identifier );
 
@@ -548,12 +561,12 @@ namespace gen
 			var list = new SyntaxList<MemberDeclarationSyntax>();
 
 			//var st = SF.ParseStatement( $"static public readonly {m_class.Identifier} def = new {m_class.Identifier};" );
-			var newClass = SF.ParseExpression( $"new {m_class.Identifier}()" );
+			var newClass = SF.ParseExpression( $"new {SU.ClassNameWithGenerics(m_class)}()" );
 
 			var declarator = SF.VariableDeclarator( "def" )
 				.WithInitializer( SF.EqualsValueClause( newClass ) );
 
-			var decl = SF.VariableDeclaration( SF.IdentifierName( m_class.Identifier ), SF.SingletonSeparatedList( declarator ) );
+			var decl = SF.VariableDeclaration( SF.IdentifierName( SU.ClassNameWithGenerics(m_class) ), SF.SingletonSeparatedList( declarator ) );
 
 			var keywords = SyntaxTokenList.Create( SF.Token( SyntaxKind.PublicKeyword ) )
 				.Add( SF.Token( SyntaxKind.StaticKeyword ) )
@@ -582,9 +595,9 @@ namespace gen
 			var versionAccParsed = SF.ParseStatement( versionAcc );
 			*/
 
-			var versionField = SU.Field( "m_version", "long", SF.ParseExpression( "0" ), SyntaxKind.PrivateKeyword );
+			var versionField = SU.Field( "m_version", "ulong", SF.ParseExpression( "0" ), SyntaxKind.PrivateKeyword );
 
-			var versionAcc = SF.PropertyDeclaration(SF.IdentifierName("long"), "Version");
+			var versionAcc = SF.PropertyDeclaration(SF.IdentifierName("ulong"), "Version");
 
 
 			versionAcc = versionAcc.WithExpressionBody( SF.ArrowExpressionClause( SF.ParseExpression( "m_version" ) ) )

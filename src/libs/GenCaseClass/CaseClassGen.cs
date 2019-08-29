@@ -402,7 +402,7 @@ namespace gen
 
 			}
 
-			var retExp = SF.ParseExpression( $"new {m_class.Identifier}( {constructorParams} )" );
+			var retExp = SF.ParseExpression( $"new {SU.ClassNameWithGenerics(m_class)}( {constructorParams} )" );
 
 			var ret = SF.ReturnStatement( retExp );
 
@@ -431,7 +431,7 @@ namespace gen
 
 		private SyntaxList<MemberDeclarationSyntax> CreateWithFunctions()
 		{
-			var returnType = m_class.Identifier;
+			var returnType = SU.ClassNameWithGenerics(m_class);
 
 			var retType = SF.IdentifierName( returnType );
 
@@ -459,7 +459,7 @@ namespace gen
 
 		private SyntaxList<MemberDeclarationSyntax> CreateCreateFunctions()
 		{
-			var returnType = m_class.Identifier;
+			var returnType = SU.ClassNameWithGenerics(m_class);
 
 			var retType = SF.IdentifierName( returnType );
 
@@ -545,17 +545,21 @@ namespace gen
 			return list;
 		}
 
+
+
+
 		private SyntaxList<MemberDeclarationSyntax> CreateDefault()
 		{
 			var list = new SyntaxList<MemberDeclarationSyntax>();
 
 			//var st = SF.ParseStatement( $"static public readonly {m_class.Identifier} def = new {m_class.Identifier};" );
-			var newClass = SF.ParseExpression( $"new {m_class.Identifier}()" );
+			var newClass = SF.ParseExpression( $"new {SU.ClassNameWithGenerics(m_class)}()" );
 
 			var declarator = SF.VariableDeclarator( "def" )
 				.WithInitializer( SF.EqualsValueClause( newClass ) );
 
-			var decl = SF.VariableDeclaration( SF.IdentifierName( m_class.Identifier ), SF.SingletonSeparatedList( declarator ) );
+
+			var decl = SF.VariableDeclaration( SF.IdentifierName( SU.ClassNameWithGenerics(m_class) ), SF.SingletonSeparatedList( declarator ) );
 
 			var keywords = SyntaxTokenList.Create( SF.Token( SyntaxKind.PublicKeyword ) )
 				.Add( SF.Token( SyntaxKind.StaticKeyword ) )

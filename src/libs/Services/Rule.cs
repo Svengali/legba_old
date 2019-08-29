@@ -13,10 +13,12 @@ public interface ISvcRule
 
 }
 
+
+
 [Serializable]
 public class RuleCfg : lib.Config
 {
-	[lib.Desc( "0: Worker count is cores - 1\n<0: Worker count is cores - coresAdj\n>0: Absolute worker count" )]
+	[lib.Desc( "=0: Worker count is cores - 1\n<0: Worker count is cores - coresAdj\n>0: Absolute worker count" )]
 	public int coresAdj = 0;
 }
 

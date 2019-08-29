@@ -13,11 +13,26 @@ using Validation;
 
 using SF = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
+using Optional;
+
+
+
 
 
 
 public static class SU
 {
+
+	/*
+	public static T Or<T>(this Option<T> thisOption, T or)
+	{
+		T v;
+
+		thisOption.
+
+		return v;
+	}
+	*/
 
 	
 	public static FieldDeclarationSyntax Field( string fieldName, string type, Optional<ExpressionSyntax> assignment, params SyntaxKind[] modifiers )
@@ -47,6 +62,14 @@ public static class SU
 		return field;
 	}
 
+	public static string ClassNameWithGenerics( ClassDeclarationSyntax cls )
+	{
+		var typeList = cls.TypeParameterList.Parameters.Select(p => SU.GetFullName(p));
+
+		var types = string.Join( ", ", typeList.Select( t => t.WithoutTrivia().ToString() ) );
+
+		return $"{cls.Identifier.ValueText}<{types}>";
+	}
 
 
 
@@ -85,27 +108,29 @@ public static class SU
 	{
 		return 
 				SF.GenericName(
-						SF.Identifier(nameof(Optional)),
+						SF.Identifier(nameof(Option)),
 						SF.TypeArgumentList(SF.SingletonSeparatedList(type)));
 	}
 	//*/
 
 	public static MemberAccessExpressionSyntax OptionalIsDefined( ExpressionSyntax optionalOfTExpression )
 	{
-		return SF.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, optionalOfTExpression, SF.IdentifierName(nameof(Optional<int>.HasValue)));
+		return SF.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, optionalOfTExpression, SF.IdentifierName(nameof(Option<int>.HasValue)));
 	}
 
 	public static InvocationExpressionSyntax OptionalGetValueOrDefault( ExpressionSyntax optionalOfTExpression, ExpressionSyntax defaultValue )
 	{
 		return SF.InvocationExpression(
-				SF.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, optionalOfTExpression, SF.IdentifierName(nameof(Or))),
+				SF.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, optionalOfTExpression, SF.IdentifierName(nameof(Option<int>.ValueOr))),
 				SF.ArgumentList(SF.SingletonSeparatedList(SF.Argument(defaultValue))));
 	}
 
+	/*
 	public static MemberAccessExpressionSyntax OptionalValue( ExpressionSyntax optionalOfTExpression )
 	{
-		return SF.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, optionalOfTExpression, SF.IdentifierName(nameof(Optional<int>.Value)));
+		return SF.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, optionalOfTExpression, SF.IdentifierName(nameof( Option<int>.)));
 	}
+	*/
 
 	/*
 	public static ExpressionSyntax OptionalFor( ExpressionSyntax expression )

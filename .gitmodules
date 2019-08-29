@@ -22,3 +22,9 @@
 [submodule "src/libs/Shielded"]
 	path = src/libs/Shielded
 	url = https://github.com/Svengali/Shielded
+[submodule "src/libs/veldrid"]
+	path = src/libs/veldrid
+	url = https://github.com/Svengali/veldrid
+[submodule "src/libs/geometry3Sharp"]
+	path = src/libs/geometry3Sharp
+	url = https://github.com/Svengali/geometry3Sharp

@@ -5,14 +5,31 @@ using System.Diagnostics;
 namespace gen
 {
 
+
+
+	[AttributeUsage( AttributeTargets.Class | AttributeTargets.Field, Inherited = true, AllowMultiple = true )]
+	public class NetVersionAttribute : Attribute
+	{
+	}
+
+
+
 	///[Conditional("CodeGeneration")]
 
 
-	[AttributeUsage( AttributeTargets.Class, AllowMultiple = true, Inherited = true )]
+	[AttributeUsage( AttributeTargets.Class | AttributeTargets.Field, AllowMultiple = true, Inherited = true )]
 	[CodeGenerationAttribute( typeof( NetViewGen ) )]
 	[Conditional( "CodeGeneration" )]
-	public class NetViewAttribute : Attribute
+	public class NetViewAttribute : NetVersionAttribute
 	{
+		public Type[] view { get; set; }
+
+		public NetViewAttribute( Type[] views )
+		{
+			view = views;
+		}
+
+
 		/*
 		public net.Views PrimaryView { get; private set; }
 		//public (net.Views from, net.Views to)[] Distribution { get; private set; }
@@ -60,4 +77,4 @@ namespace gen
 
 
 
-}
+	}

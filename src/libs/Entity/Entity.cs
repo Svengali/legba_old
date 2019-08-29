@@ -6,36 +6,26 @@ using System.Diagnostics.Tracing;
 using lib.Net;
 using Validation;
 
+
 namespace ent
 {
 
+	public enum EntityId : ulong
+	{
+		Invalid = 0,
+	}
 
-
-
+	/*
 public partial class ComHealth : Component
 {
 	public float Health => m_health;
-
-
-
 }
-
-
-
-
-
-
-
-
-
 
 public partial class Entity
 {
 	private int m_testVal = 10;
 
 	public int TestVal => m_testVal;
-
-
 
 	public Optional<T> Com<T>() where T : class
 	{
@@ -60,10 +50,6 @@ public partial class Entity
 	}
 
 
-
-
-
-	/*
 	public Entity MutCom<T>(Func<T> fn) where T : Component
 	{
 		var name = typeof(T).Name;
@@ -88,7 +74,55 @@ public partial class Entity
 		}
 	}
 	*/
+
+	public partial class Component<T>
+	{
+
+	}
+
+
+
+
+
 }
+
+
+
+namespace mmo
+{
+	public enum Com
+	{
+		Invalid,
+		Physical,
+		Health,
+		Connection,
+
+	}
+
+	public class Component : ent.Component<Com>
+	{
+
+	}
+
+	public class ComHealthCfg : lib.Config
+	{
+
+	}
+
+	public class ComHealth : Component
+	{
+		public 
+	}
+
+	public class Entity : ent.Entity<Com>
+	{
+
+	}
+
+
+
+}
+
 
 public class Amazing
 { }
@@ -114,4 +148,6 @@ public partial class Mut<T>
 
 
 
-}
+
+
+

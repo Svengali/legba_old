@@ -4,6 +4,13 @@ using System.Windows;
 
 namespace EntityTest
 {
+
+	public enum Test
+	{
+
+	}
+
+
 	class Program
 	{
 		static void Main( string[] args )
@@ -55,7 +62,7 @@ namespace EntityTest
 		}
 
 
-		static void change( ref ent.Entity ent )
+		static void change( ref ent.Entity<Test> ent )
 		{
 			//ent = ent.with(testIntOpt: 10);
 		}
