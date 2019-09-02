@@ -28,3 +28,6 @@
 [submodule "src/libs/geometry3Sharp"]
 	path = src/libs/geometry3Sharp
 	url = https://github.com/Svengali/geometry3Sharp
+[submodule "src/libs/ComputeSharp"]
+	path = src/libs/ComputeSharp
+	url = https://github.com/Svengali/ComputeSharp
