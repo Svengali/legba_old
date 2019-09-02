@@ -80,6 +80,11 @@ public partial class Entity
 
 	}
 
+	public partial class ComponentWithCfg<T, TCFG> : Component<T>
+	{
+
+	}
+
 
 
 
@@ -99,7 +104,7 @@ namespace mmo
 
 	}
 
-	public class Component : ent.Component<Com>
+	public class ComponentWithCfg<TCFG> : ent.ComponentWithCfg<Com, TCFG>
 	{
 
 	}
@@ -109,9 +114,8 @@ namespace mmo
 
 	}
 
-	public class ComHealth : Component
+	public class ComHealth : ComponentWithCfg<ComHealthCfg>
 	{
-		public 
 	}
 
 	public class Entity : ent.Entity<Com>

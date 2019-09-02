@@ -42,8 +42,16 @@ namespace ent
 			return null;
 		}
 
+		static public Checkout<T> checkout( ent.EntityId id )
+		{
+			var co = new Checkout<T>();
 
-		static public void checkout( ent.EntityId id, ref Checkout<T> co )
+			checkout( id, co );
+
+			return co;
+		}
+
+		static public void checkout( ent.EntityId id, Checkout<T> co )
 		{
 			if( s_entities.TryGetValue( id, out EntityInfo<T> ent ) )
 			{
@@ -81,6 +89,10 @@ namespace ent
 	{
 		public ImmutableList<ent.Entity<T>> Checkouts => m_checkouts;
 
+		void checkout( ent.EntityId id )
+		{
+			DB<T>.checkout( id, this );
+		}
 
 		internal void add( ent.Entity<T> ent )
 		{
