@@ -31,3 +31,6 @@
 [submodule "src/libs/ComputeSharp"]
 	path = src/libs/ComputeSharp
 	url = https://github.com/Svengali/ComputeSharp
+[submodule "src/libs/WaveFunctionCollapse"]
+	path = src/libs/WaveFunctionCollapse
+	url = https://github.com/Svengali/WaveFunctionCollapse
