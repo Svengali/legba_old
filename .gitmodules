@@ -34,3 +34,6 @@
 [submodule "src/libs/WaveFunctionCollapse"]
 	path = src/libs/WaveFunctionCollapse
 	url = https://github.com/Svengali/WaveFunctionCollapse
+[submodule "src/libs/PriorityQueue"]
+	path = src/libs/PriorityQueue
+	url = https://github.com/Svengali/PriorityQueue
