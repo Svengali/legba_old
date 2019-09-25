@@ -1,0 +1,28 @@
+{
+  "FileVersion": 2,
+  "Id": "54502631-5db1-4958-a2dc-34a5be90bfd0",
+  "Items": [
+    {
+      "Id": "df4d4a17-047d-4957-a8d6-1af16c07277f",
+      "Command": "Test",
+      "Items": [
+        {
+          "Id": "db3e12cc-328e-4a34-8c9b-e5fe888ce210",
+          "Command": ""
+        },
+        {
+          "Id": "ad538aa5-f10c-4771-9ba0-1c0bfdd7f79c",
+          "Command": ""
+        }
+      ]
+    },
+    {
+      "Id": "04098ba6-c359-43bc-885e-d4596b65597f",
+      "Command": "config/machines/Server.cfg"
+    },
+    {
+      "Id": "e915f046-3873-4d1a-9310-46009fcf7a68",
+      "Command": "config/machines/Client.cfg"
+    }
+  ]
+}

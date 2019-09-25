@@ -14,6 +14,10 @@ using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using System.Reflection;
+using System.IO;
+
+
+
 
 
 
@@ -83,10 +87,15 @@ namespace cl
 			//var e = new ent.Entity<Game>();
 
 
-			var e2 = ent.Entity<Game>.create();
+			var e2 = mmo.Entity.create();
 
 
+			Stream stream = null;
+			var writer = new net.BinaryWriter( stream );
 
+			writer.Write( "root", e2 );
+
+			//e2.write( writer );
 
 		}
 

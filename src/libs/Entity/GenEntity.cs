@@ -42,23 +42,27 @@ namespace ent
 	public partial interface IEntity<T>
 	{
 		EntityId Id { get; }
-		Option<T> Com<T>() where T : class;
+		Option<U> Com<U>() where U : class;
 	}
 
 
 
 	[gen.NetView( new[] { typeof( net.View<Local> ), typeof( net.View<Remote> ) } )]
-	public partial class Entity<T> : IEntity<T>, net.Versioned
+	public partial class Entity<T> : IEntity<T>, net.Versioned, net.IWriteSelf<Entity<T>>
 	{
 		public EntityId Id => m_id;
 
-		public Option<T> Com<T>() where T : class
+		public Option<U> Com<U>() where U : class
 		{
-			return Option.None<T>();
+			return Option.None<U>();
 		}
 
 
 
+
+		public void Write( string name, Entity<T> obj )
+		{
+		}
 
 		EntityId m_id;
 

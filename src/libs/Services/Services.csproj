@@ -11,14 +11,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Collections.Immutable" Version="1.6.0-preview3.19128.7" />
+    <PackageReference Include="System.Collections.Immutable" Version="1.6.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Ceras\src\Ceras\Ceras.csproj" />
     <ProjectReference Include="..\Discord.Net\src\Discord.Net.WebSocket\Discord.Net.WebSocket.csproj" />
     <ProjectReference Include="..\konsole\Konsole\Konsole.csproj" />
     <ProjectReference Include="..\NetCore\NetCore.csproj" />
     <ProjectReference Include="..\SharpLib\SharpLib.csproj" />
+    <ProjectReference Include="..\Shielded.Gossip\Shielded.Gossip\Shielded.Gossip.csproj" />
+    <ProjectReference Include="..\Shielded\Shielded\Shielded.csproj" />
   </ItemGroup>
 
 </Project>

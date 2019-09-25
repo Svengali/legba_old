@@ -37,3 +37,12 @@
 [submodule "src/libs/PriorityQueue"]
 	path = src/libs/PriorityQueue
 	url = https://github.com/Svengali/PriorityQueue
+[submodule "src/libs/Ceras"]
+	path = src/libs/Ceras
+	url = https://github.com/Svengali/Ceras
+[submodule "src/libs/Shielded.Gossip"]
+	path = src/libs/Shielded.Gossip
+	url = https://github.com/Svengali/Shielded.Gossip
+[submodule "src/libs/MathSharp"]
+	path = src/libs/MathSharp
+	url = https://github.com/Svengali/MathSharp

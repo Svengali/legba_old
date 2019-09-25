@@ -15,6 +15,7 @@ using System.IO;
 using Konsole;
 using System.Diagnostics;
 using System.Linq.Expressions;
+using Shielded.Gossip;
 
 namespace sv
 {
@@ -289,6 +290,12 @@ namespace sv
 			/*/
 			lib.Log.info( $"Skipping tests." );
 			//*/
+
+			Serializer.Use( new svc.CerasSerializerForShielded() );
+
+
+
+
 
 			res.Mgr.startup();
 			lib.Config.startup( "server_config.cfg" );
