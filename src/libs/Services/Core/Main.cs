@@ -219,12 +219,40 @@ namespace sv
 
 
 
+		/*
+
+		//Konsole
 
 		static Window s_fullscreenWin;
 		static IConsole s_logWin;
+		//*/
+
+		static char getSymbol( lib.LogType type )
+		{
+			switch( type )
+			{
+				case lib.LogType.Trace:
+				return '.';
+				case lib.LogType.Debug:
+				return '-';
+				case lib.LogType.Info:
+				return ' ';
+				case lib.LogType.Warn:
+				return '+';
+				case lib.LogType.Error:
+				return '*';
+				case lib.LogType.Fatal:
+				return '*';
+				default:
+				return '?';
+			}
+		}
+
+
 
 		static public void log( lib.LogEvent evt )
 		{
+			/*
 			switch( evt.LogType )
 			{
 				case lib.LogType.Error:
@@ -240,6 +268,49 @@ namespace sv
 			}
 
 			s_logWin.WriteLine( $"{evt.Msg}" );
+	
+		Invalid = 0,
+		Trace = 1,
+		Debug = 2,
+		Info = 3,
+		Warn = 4,
+		Error = 5,
+		Fatal = 6,
+			
+			
+			/*/
+			switch( evt.LogType )
+			{
+				case lib.LogType.Trace:
+				Console.ForegroundColor = ConsoleColor.Gray;
+				break;
+				case lib.LogType.Debug:
+				Console.ForegroundColor = ConsoleColor.Gray;
+				break;
+				case lib.LogType.Info:
+				Console.ForegroundColor = ConsoleColor.White;
+				break;
+				case lib.LogType.Warn:
+				Console.ForegroundColor = ConsoleColor.Yellow;
+				break;
+				case lib.LogType.Error:
+				Console.ForegroundColor = ConsoleColor.Red;
+				break;
+				case lib.LogType.Fatal:
+				Console.ForegroundColor = ConsoleColor.Yellow;
+				break;
+			}
+
+			char sym = getSymbol( evt.LogType );
+
+			string finalMsg = string.Format( "{0,-6}{1}| {2}", evt.Cat, sym, evt.Msg );
+
+			Console.WriteLine( $"{finalMsg}" );
+
+			Console.ForegroundColor = ConsoleColor.Gray;
+			//*/
+
+
 		}
 
 
@@ -251,6 +322,7 @@ namespace sv
 		{
 			main = this;
 
+			/*
 			s_fullscreenWin = new Window();
 			s_fullscreenWin.BackgroundColor = ConsoleColor.DarkGray;
 			s_fullscreenWin.Clear( ConsoleColor.DarkGray );
@@ -262,6 +334,7 @@ namespace sv
 			var ySize = s_fullscreenWin.WindowHeight - yStart * 2;
 
 			s_logWin = Window.Open( xStart, yStart, xSize, ySize, "Logging" );
+			//1*/
 
 
 			Process p = Process.GetCurrentProcess();
