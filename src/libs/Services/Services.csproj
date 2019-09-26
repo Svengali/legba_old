@@ -8,6 +8,7 @@
     </TargetFrameworks>
     <Platforms>AnyCPU;x64</Platforms>
     <RootNamespace>svc</RootNamespace>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,7 +22,6 @@
     <ProjectReference Include="..\NetCore\NetCore.csproj" />
     <ProjectReference Include="..\SharpLib\SharpLib.csproj" />
     <ProjectReference Include="..\Shielded.Gossip\Shielded.Gossip\Shielded.Gossip.csproj" />
-    <ProjectReference Include="..\Shielded\Shielded\Shielded.csproj" />
   </ItemGroup>
 
 </Project>

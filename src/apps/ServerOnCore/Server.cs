@@ -1,20 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-using System.ComponentModel;
-using System.Drawing;
-using System.Runtime.InteropServices;
-
-using System.Net.Sockets;
-
-using System.Diagnostics;
-
-using System.Linq.Expressions;
-using System.Runtime.CompilerServices;
-using System.Reflection;
-using Konsole;
 
 namespace sv
 {

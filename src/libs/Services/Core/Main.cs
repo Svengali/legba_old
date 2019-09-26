@@ -263,6 +263,7 @@ namespace sv
 
 			s_logWin = Window.Open( xStart, yStart, xSize, ySize, "Logging" );
 
+
 			Process p = Process.GetCurrentProcess();
 
 			string logpath = "logs/"+Environment.MachineName+"_"+p.Id+".log";
