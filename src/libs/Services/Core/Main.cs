@@ -1,4 +1,10 @@
-﻿using System;
+﻿/*
+	M A I N
+
+	The core server class.  
+
+*/
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,11 +22,10 @@ using Konsole;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using Shielded.Gossip;
+using System.Collections.Concurrent;
 
 namespace sv
 {
-
-
 
 
 	#region Test
@@ -147,6 +152,7 @@ namespace sv
 			}
 			var endMs = timer.Current;
 
+			
 			lib.Log.info( $"testExpression: {endMs}" );
 		}
 
@@ -158,11 +164,6 @@ namespace sv
 	}
 
 	#endregion
-
-
-
-
-
 
 	public enum ENodeType
 	{
@@ -188,13 +189,36 @@ namespace sv
 		Dictionary<lib.Token, string> m_comList = new Dictionary<lib.Token, string>();
 	}
 
+
+
+
+
+
+
+
+
+
 	[Serializable]
-	public struct NewService
+	public class NewService
 	{
-		public string type;
-		public string name;
-		public string configPath;
+		public string type = "<unknown>";
+		public string name = "<unknown>";
+		public string configPath = "<unknown>";
 	}
+
+	[Serializable]
+	public class ServiceOnDemand
+	{
+		public NewService service = new NewService();
+	}
+
+	[Serializable]
+	public class RemoteMachine
+	{
+		public string address = "0.0.0.0";
+		public int    port = 8008;
+	}
+
 
 	[Serializable]
 	public class ServerCfg : lib.Config
@@ -207,7 +231,9 @@ namespace sv
 		public res.Ref<svc.MachineCfg> machineCfg;
 
 		public NewService[] services = { new NewService() };
-		public string[] demand = { };
+		public ServiceOnDemand[] servicesOnDemand = { new ServiceOnDemand() };
+
+		public RemoteMachine[] machines = { new RemoteMachine() };
 	}
 
 
@@ -217,8 +243,7 @@ namespace sv
 	{
 		static public Main main;
 
-
-
+		#region Logging
 		/*
 
 		//Konsole
@@ -303,7 +328,7 @@ namespace sv
 
 			char sym = getSymbol( evt.LogType );
 
-			string finalMsg = string.Format( "{0,-6}{1}| {2}", evt.Cat, sym, evt.Msg );
+			string finalMsg = string.Format( "{0,-6}{1}| {2}", evt.Cat, sym.ToString(), evt.Msg );
 
 			Console.WriteLine( $"{finalMsg}" );
 
@@ -313,7 +338,7 @@ namespace sv
 
 		}
 
-
+		#endregion Logging
 
 
 		public lib.Clock clock { get; private set; }
@@ -322,7 +347,7 @@ namespace sv
 		{
 			main = this;
 
-			/*
+			/* Konsole Logging
 			s_fullscreenWin = new Window();
 			s_fullscreenWin.BackgroundColor = ConsoleColor.DarkGray;
 			s_fullscreenWin.Clear( ConsoleColor.DarkGray );
@@ -368,9 +393,6 @@ namespace sv
 			Serializer.Use( new svc.CerasSerializerForShielded() );
 
 
-
-
-
 			res.Mgr.startup();
 			lib.Config.startup( "server_config.cfg" );
 
@@ -394,33 +416,47 @@ namespace sv
 			//m_cfg = lib.Config.load<ServerCfg>( configPath );
 			m_cfg = res.Mgr.lookup<ServerCfg>( configPath );
 
-			lib.Log.info( $"Listening on port {m_cfg.res.port}" );
-			var localEP = new IPEndPoint( IPAddress.Parse( m_cfg.res.address ), m_cfg.res.port );
 
-			m_listener = new TcpListener( localEP );
-			m_listener.Start();
-
-			/*
+			//*
 			foreach( NetworkInterface nic in
 					NetworkInterface.GetAllNetworkInterfaces() )
 			{
-				Console.WriteLine( nic.Name );
+				if( nic.OperationalStatus == OperationalStatus.Up )
+				{
+					lib.Log.logProps( nic, "Network Interface (up)", lib.LogType.Info, prefix: "  " );
+				}
+				else
+				{
+					lib.Log.info( "Network Interface (down)" );
+					lib.Log.info( $"  {nic.Name} {nic.Description}" );
+				}
+
 				foreach( UnicastIPAddressInformation addrInfo in
 						nic.GetIPProperties().UnicastAddresses )
 				{
-					Console.WriteLine( "\t" + addrInfo.Address );
+					//lib.Log.logProps( addrInfo, " Addresses", lib.LogType.Info, prefix: "    " );
+					lib.Log.debug( $"    {addrInfo.Address}" );
 				}
 			}
-			*/
+			//*/
 
-			var ep = (IPEndPoint)m_listener.LocalEndpoint;
+			string machineName = m_cfg.res.name; //+"/"+ep.Address.ToString() + ":" + ep.Port;
 
-			string machineName = m_cfg.res.name+"/"+ep.Address.ToString() + ":" + ep.Port;
+			var machines = new Dictionary<string, IPEndPoint>();
 
-			//First of all start the machine service
+			machines[machineName] = new IPEndPoint( IPAddress.Any, m_cfg.res.port );
 
-			//This is now done 
-			//var machineCfg = res.Mgr.load<svc.MachineCfg>( m_cfg.res.machineCfg );
+			foreach( var mac in m_cfg.res.machines )
+			{
+				var remoteName = $"remote_{mac.address}:{mac.port.ToString()}";
+			}
+
+			connectToOtherMachines( machineName, machines );
+
+
+
+
+
 
 			m_machine = new svc.Machine( new lib.Token( machineName ), m_cfg.res.machineCfg );
 			svc.Service.s_mgr.start( m_machine );
@@ -443,14 +479,63 @@ namespace sv
 
 		}
 
+		#region Shielded.Gossip
+		protected void OnListenerError( object sender, Exception ex )
+		{
+		}
+
+		private ConcurrentQueue<(string, string, object)> _messages = new ConcurrentQueue<(string, string, object)>();
+
+		protected void OnMessage( string server, object msg )
+		{
+#if DEBUG
+			if( msg is DirectMail dm && dm.Items != null && dm.Items.Length == 1 )
+				_messages.Enqueue( (DateTime.Now.ToString( "hh:mm:ss.fff" ), server, dm.Items[0]) );
+			else
+				_messages.Enqueue( (DateTime.Now.ToString( "hh:mm:ss.fff" ), server, msg) );
+#endif
+		}
+
+		protected void CheckProtocols()
+		{
+		}
+
+
+		GossipBackend CreateBackend( ITransport transport, GossipConfiguration configuration )
+		{
+			return new GossipBackend( transport, configuration );
+		}
+
+		TcpTransport CreateTransport( string ownId, IDictionary<string, IPEndPoint> servers )
+		{
+			var transport = new TcpTransport(ownId, servers);
+			transport.Error += OnListenerError;
+			transport.StartListening();
+			return transport;
+		}
+
+
+		void connectToOtherMachines( string ownIp, IDictionary<string, IPEndPoint> servers )
+		{
+			var transport = CreateTransport( ownIp, servers );
+			var backend = CreateBackend(transport, new GossipConfiguration
+			{
+				GossipInterval = 250,
+				AntiEntropyIdleTimeout = 2000,
+			});
+
+			var backendHandler = transport.MessageHandler;
+			transport.MessageHandler = msg =>
+			{
+				OnMessage( ownIp, msg );
+				return backendHandler( msg );
+			};
+		}
+		#endregion Shielded.Gossip
+
+
 		public void shutdown()
 		{
-			foreach( var c in m_cnx )
-			{
-				c.Stream.Close();
-				c.Sock.Close();
-			}
-
 			var shutdown = new svmsg.Shutdown();
 
 			m_machine.send( shutdown );
@@ -462,7 +547,6 @@ namespace sv
 
 		public void startup()
 		{
-
 			Thread thread = new Thread( new ThreadStart( this.run ) );
 			thread.Start();
 		}
@@ -479,39 +563,18 @@ namespace sv
 		{
 			clock.tick();
 
-			//msg.Tick tick = new msg.Tick();
-
-			//svc.Service.mgr.send( tick );
-
 			svc.Service.s_mgr.procMsg_block( 1000 );
 
-			//lib.Util.checkAndAddDirectory( "" );
-
-			if( m_listener.Pending() )
-			{
-				lib.Log.info( "Client connected" );
-
-				Socket socket = m_listener.AcceptSocket();
-
-
-				net.Conn conn = new net.Conn( socket );
-
-				m_cnx.Add( conn );
-
-				conn.recieveThread();
-			}
 		}
 
 
 		res.Ref<ServerCfg> m_cfg;
 
-		TcpListener m_listener;
-
-		List<net.Conn> m_cnx = new List<net.Conn>();
-
 		svc.Mgr m_svcMgr;
 
 		svc.Machine m_machine;
+
+
 
 
 	}
