@@ -1,6 +1,6 @@
 [submodule "src/libs/SharpLib"]
 	path = src/libs/SharpLib
-	url = git@github.com:Svengali/SharpLib.git
+	url = https://github.com/Svengali/SharpLib.git
 [submodule "src/libs/CodeGeneration.Roslyn"]
 	path = src/libs/CodeGeneration.Roslyn
 	url = https://github.com/Svengali/CodeGeneration.Roslyn
