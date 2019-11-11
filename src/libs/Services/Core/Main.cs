@@ -442,16 +442,22 @@ namespace sv
 
 			string machineName = m_cfg.res.name; //+"/"+ep.Address.ToString() + ":" + ep.Port;
 
-			var machines = new Dictionary<string, IPEndPoint>();
+			var machines = new List<IPEndPoint>(); // new Dictionary<string, IPEndPoint>();
 
-			machines[machineName] = new IPEndPoint( IPAddress.Any, m_cfg.res.port );
+			//machines[machineName] = new IPEndPoint( IPAddress.Any, m_cfg.res.port );
+			var localEndPoint = new IPEndPoint( IPAddress.Any, m_cfg.res.port );
+
 
 			foreach( var mac in m_cfg.res.machines )
 			{
-				var remoteName = $"remote_{mac.address}:{mac.port.ToString()}";
+				//var remoteName = $"remote_{mac.address}:{mac.port.ToString()}";
+
+				//machines[remoteName] = new IPEndPoint( IPAddress.Parse( mac.address ), mac.port );
+
+				machines.Add( new IPEndPoint( IPAddress.Parse( mac.address ), mac.port ) );
 			}
 
-			connectToOtherMachines( machineName, machines );
+			connectToOtherMachines( machineName, localEndPoint, machines );
 
 
 
@@ -506,18 +512,18 @@ namespace sv
 			return new GossipBackend( transport, configuration );
 		}
 
-		TcpTransport CreateTransport( string ownId, IDictionary<string, IPEndPoint> servers )
+		svc.TcpTransport CreateTransport( string ownId, IPEndPoint localEndPoint, IList<IPEndPoint> servers )
 		{
-			var transport = new TcpTransport(ownId, servers);
+			var transport = new svc.TcpTransport(ownId, localEndPoint, servers);
 			transport.Error += OnListenerError;
 			transport.StartListening();
 			return transport;
 		}
 
 
-		void connectToOtherMachines( string ownIp, IDictionary<string, IPEndPoint> servers )
+		void connectToOtherMachines( string ownIp, IPEndPoint localEndPoint, IList<IPEndPoint> servers )
 		{
-			var transport = CreateTransport( ownIp, servers );
+			var transport = CreateTransport( ownIp, localEndPoint, servers );
 			var backend = CreateBackend(transport, new GossipConfiguration
 			{
 				GossipInterval = 250,

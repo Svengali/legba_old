@@ -98,7 +98,7 @@ namespace svc
 					}
 					StartSending();
 				}
-				Transport.MessageLoop( this, client, async msg => Send( msg ), OnCloseOrError );
+				await Transport.MessageLoop( this, client, async msg => Send( msg ), OnCloseOrError ).ConfigureAwait( false );
 			}
 			catch( Exception ex )
 			{

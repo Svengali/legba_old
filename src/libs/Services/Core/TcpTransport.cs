@@ -30,9 +30,11 @@ namespace svc
 		/// <param name="ownId">The ID of this server.</param>
 		/// <param name="serverIPs">The dictionary with server IDs and IP endpoints, including this server. Do not make later
 		/// changes to any of the IPEndPoint objects!</param>
-		public TcpTransport( string ownId, IList<IPEndPoint> serverIPs )
+		public TcpTransport( string ownId, IPEndPoint localEndPoint, IList<IPEndPoint> serverIPs )
 		{
 			OwnId = ownId ?? throw new ArgumentNullException( nameof( ownId ) );
+
+			LocalEndpoint = localEndPoint;
 
 			if( serverIPs == null )
 				throw new ArgumentNullException( nameof( serverIPs ) );
@@ -40,19 +42,26 @@ namespace svc
 
 			//LocalEndpoint = serverIPs[ownId];
 
-			/*
-			(ServerIPs, _clientConnections) = Shield.InTransaction( () =>
+			//*
+			var success = Shield.InTransaction( () =>
 			{
+				/*
 				var ips = new ShieldedDict<string, IPEndPoint>(serverIPs.Where(kvp => !StringComparer.InvariantCultureIgnoreCase.Equals(kvp.Key, ownId)));
 
 				var clients = new ConcurrentDictionary<string, TcpClientConnection>(
 										ips.Select(kvp => new KeyValuePair<string, TcpClientConnection>(kvp, new TcpClientConnection(this, kvp))));
+										*/
 
-				Shield.PreCommit( () => ips.TryGetValue( "any", out var _ ) || true,
-						() => Shield.SyncSideEffect( UpdateClientConnections ) );
-				return (ips, clients);
+				foreach( var ip in serverIPs )
+					PotentialServers.Add( ip );
+
+				//Shield.SideEffect( () => UpdateClientConnections() );
+
+				UpdateClientConnections();
+
+				return true;
 			} );
-			*/
+			//*/
 
 
 		}
@@ -68,8 +77,9 @@ namespace svc
 		//public readonly ShieldedDict<string, IPEndPoint> TestServerIPs;
 
 
-		public ICollection<string> Servers => (ICollection<string>)_servers.Select( v => v.Id );
+		public IEnumerable<string> Servers => _servers.Select( v => v.Id );
 
+		public int ServerCount => _servers.Count;
 
 		public readonly ShieldedSeqNc<IPEndPoint> PotentialServers = new ShieldedSeqNc<IPEndPoint>();
 
@@ -93,7 +103,6 @@ namespace svc
 		//private readonly ConcurrentDictionary<string, TcpClientConnection> _clientConnections;
 		//private readonly ConcurrentDictionary<TcpClient, object> _serverConnections = new ConcurrentDictionary<TcpClient, object>();
 
-		// @@@ TODO this should probably be immutable
 		//private readonly ConcurrentBag<TcpClientConnection> _connections = new ConcurrentBag<TcpClientConnection>();
 
 		ImmutableList<TcpClientConnection> _attempts = ImmutableList<TcpClientConnection>.Empty;
@@ -118,15 +127,17 @@ namespace svc
 
 			foreach( var server in PotentialServers.Consume )
 			{
+				lib.Log.info( $"Connecting to {server.ToString()}" );
+
 				if( _servers.Exists( other => other.TargetEndPoint == server ) )
 				{
-					// TODO LOG 
+					lib.Log.warn( $"Server is already connected." );
 					continue;
 				}
 
 				if( _attempts.Exists( other => other.TargetEndPoint == server ) )
 				{
-					// TODO LOG 
+					lib.Log.warn( $"Already attempting to connect" );
 					continue;
 				}
 
@@ -136,6 +147,7 @@ namespace svc
 
 				byte[] bytes = Encoding.ASCII.GetBytes( OwnId );
 
+				lib.Log.trace( $"Sending hello" );
 				newConn.Send( bytes );
 			}
 
@@ -146,6 +158,8 @@ namespace svc
 		/// </summary>
 		public void StopListening()
 		{
+			lib.Log.info( $"Stopping listening" );
+
 			lock( _listenerLock )
 			{
 				var listener = _listener;
@@ -181,6 +195,8 @@ namespace svc
 		/// </summary>
 		public async void StartListening()
 		{
+			lib.Log.info( $"Starting listening on {LocalEndpoint}" );
+
 			TcpListener listener;
 			lock( _listenerLock )
 			{
@@ -188,6 +204,8 @@ namespace svc
 					return;
 				listener = _listener = new TcpListener( LocalEndpoint );
 			}
+
+
 			try
 			{
 				listener.Start();
@@ -196,6 +214,9 @@ namespace svc
 				while( true )
 				{
 					var client = await listener.AcceptTcpClientAsync().ConfigureAwait(false);
+
+					lib.Log.debug( $"Client is attempting to connect from {client.Client.RemoteEndPoint}" );
+					lib.Log.logProps( client.Client, "->", lib.LogType.Trace );
 
 					client.ReceiveTimeout = ReceiveTimeout;
 
@@ -221,7 +242,7 @@ namespace svc
 			}
 		}
 
-		internal async void MessageLoop( TcpClientConnection connection, TcpClient client, Func<byte[], Task> sender, Action<TcpClient, Exception> onCloseOrError )
+		internal async Task MessageLoop( TcpClientConnection connection, TcpClient client, Func<byte[], Task> sender, Action<TcpClient, Exception> onCloseOrError )
 		{
 			async Task<bool> ReceiveBuffer( NetworkStream ns, byte[] buff )
 			{
@@ -273,6 +294,8 @@ namespace svc
 						hasSaidHello = true;
 
 						string id = Encoding.ASCII.GetString( buffer );
+
+						lib.Log.debug( $"Recv hello as {id}" );
 
 						connection.Id = id;
 					}
