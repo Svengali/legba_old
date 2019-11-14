@@ -511,7 +511,7 @@ namespace svc
 
 	public class CerasSerializerForShielded : ISerializer
 	{
-		
+
 
 		static SerializerConfig s_config;
 

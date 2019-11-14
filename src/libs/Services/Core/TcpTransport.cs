@@ -230,7 +230,7 @@ namespace svc
 							{
 								//TODO HACK remove it later
 								//if( _serverConnections.TryRemove( c, out var _ ) && ex != null )
-									RaiseError( ex );
+								RaiseError( ex );
 							} );
 				}
 			}

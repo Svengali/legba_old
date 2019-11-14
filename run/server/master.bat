@@ -1,0 +1,1 @@
+..\..\src\apps\ServerOnCore\bin\Debug\netcoreapp3.0\ServerOnCore.exe %1

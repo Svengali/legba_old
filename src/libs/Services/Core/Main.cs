@@ -152,7 +152,7 @@ namespace sv
 			}
 			var endMs = timer.Current;
 
-			
+
 			lib.Log.info( $"testExpression: {endMs}" );
 		}
 
